@@ -158,7 +158,6 @@
             color: #888;
         }
 
-        /* БУРГЕР-МЕНЮ (ТОЛЬКО ДЛЯ ТЕЛЕФОНА) */
         .burger-menu {
             display: none;
             cursor: pointer;
@@ -229,7 +228,7 @@
             color: #ffffff;
         }
 
-        /* ПК СЛАЙДЕР (движущийся) */
+        /* ПК СЛАЙДЕР */
         .slider-container {
             width: 100%;
             overflow: hidden;
@@ -257,20 +256,21 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* СЛАЙДЕР ДЛЯ ТЕЛЕФОНА (ИСПРАВЛЕНО - ФОТО ВИДНО ПОЛНОСТЬЮ) */
+        /* МОБИЛЬНЫЙ СЛАЙДЕР - ФОТО ВИДНО ПОЛНОСТЬЮ */
         .mobile-slider {
             display: none;
             width: 100%;
             position: relative;
             background: #000;
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
+            margin-bottom: 1rem;
         }
         .mobile-slider img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            max-height: 300px;
+            object-fit: contain;
             filter: grayscale(0.3);
+            display: block;
         }
 
         .stats {
@@ -457,7 +457,6 @@
             border-top: 1px solid #111;
         }
 
-        /* ========== АДАПТИВ ДЛЯ ТЕЛЕФОНА ========== */
         @media (max-width: 768px) {
             .songs-grid {
                 grid-template-columns: 1fr;
@@ -509,7 +508,6 @@
             .songs-container {
                 padding: 0 1rem 1rem 1rem;
             }
-            /* Телефонный слайдер */
             .slider-container {
                 display: none;
             }
@@ -542,7 +540,6 @@
     </div>
 </div>
 
-<!-- МОБИЛЬНОЕ МЕНЮ -->
 <div class="mobile-nav" id="mobileNav">
     <button class="close-mobile-nav" id="closeMobileNav">✕</button>
     <a href="#" id="mobileMusicLink">Music</a>
@@ -567,12 +564,12 @@
         </div>
     </div>
 
-    <!-- СЛАЙДЕР ДЛЯ ПК (движущийся) -->
+    <!-- ПК СЛАЙДЕР -->
     <div class="slider-container" id="sliderContainer">
         <div class="slider-track" id="sliderTrack"></div>
     </div>
 
-    <!-- СЛАЙДЕР ДЛЯ ТЕЛЕФОНА (смена фото) -->
+    <!-- МОБИЛЬНЫЙ СЛАЙДЕР -->
     <div class="mobile-slider" id="mobileSlider">
         <img id="mobileSlideImg" src="" alt="Lady Gaga">
     </div>
@@ -605,24 +602,17 @@
 </div>
 
 <script>
-    // МАССИВ ДЛЯ СЛАЙДЕРА (38 ФОТО)
+    // МАССИВ ФОТОГРАФИЙ (ДОБАВЬ СВОИ)
     const images = [
         "images/slide1.jpg", "images/slide2.jpg", "images/slide3.jpg",
         "images/slide4.jpg", "images/slide5.jpg", "images/slide6.jpg",
         "images/slide7.jpg", "images/slide8.jpg", "images/slide9.jpg",
         "images/slide10.jpg", "images/slide11.jpg", "images/slide12.jpg",
         "images/slide13.jpg", "images/slide14.jpg", "images/slide15.jpg",
-        "images/slide16.jpg", "images/slide17.jpg", "images/slide18.jpg",
-        "images/slide19.jpg", "images/slide20.jpg", "images/slide21.jpg",
-        "images/slide22.jpg", "images/slide23.jpg", "images/slide24.jpg",
-        "images/slide25.jpg", "images/slide26.jpg", "images/slide27.jpg",
-        "images/slide28.jpg", "images/slide29.jpg", "images/slide30.jpg",
-        "images/slide31.jpg", "images/slide32.jpg", "images/slide33.jpg",
-        "images/slide34.jpg", "images/slide35.jpg", "images/slide36.jpg",
-        "images/slide37.jpg", "images/slide38.jpg"
+        "images/slide16.jpg", "images/slide17.jpg", "images/slide18.jpg"
     ];
 
-    // ПК СЛАЙДЕР (движущийся)
+    // ПК СЛАЙДЕР
     function initSlider() {
         const track = document.getElementById("sliderTrack");
         if (!track) return;
@@ -638,9 +628,29 @@
         }
     }
 
-    // ТЕЛЕФОННЫЙ СЛАЙДЕР (смена фото каждые 3-7 секунд)
+    // МОБИЛЬНЫЙ СЛАЙДЕР (МЕНЯЕТСЯ КАЖДЫЕ 3-7 СЕКУНД)
     let mobileSlideIndex = 0;
     let mobileSlideInterval;
+
+    function startMobileSlider() {
+        if (mobileSlideInterval) clearInterval(mobileSlideInterval);
+        
+        function changeImage() {
+            mobileSlideIndex = (mobileSlideIndex + 1) % images.length;
+            const img = document.getElementById("mobileSlideImg");
+            if (img && images[mobileSlideIndex]) {
+                img.src = images[mobileSlideIndex];
+            }
+            // Случайная задержка от 3 до 7 секунд
+            const delay = Math.floor(Math.random() * (7000 - 3000 + 1) + 3000);
+            mobileSlideInterval = setTimeout(changeImage, delay);
+        }
+        
+        // Первая смена через случайное время
+        const firstDelay = Math.floor(Math.random() * (7000 - 3000 + 1) + 3000);
+        mobileSlideInterval = setTimeout(changeImage, firstDelay);
+    }
+
     function initMobileSlider() {
         const mobileImg = document.getElementById("mobileSlideImg");
         if (!mobileImg) return;
@@ -650,23 +660,10 @@
         startMobileSlider();
     }
 
-    function startMobileSlider() {
-        if (mobileSlideInterval) clearInterval(mobileSlideInterval);
-        const randomDelay = () => Math.floor(Math.random() * (7000 - 3000 + 1) + 3000);
-        function nextSlide() {
-            mobileSlideIndex = (mobileSlideIndex + 1) % images.length;
-            const img = document.getElementById("mobileSlideImg");
-            if (img && images[mobileSlideIndex]) {
-                img.src = images[mobileSlideIndex];
-            }
-            mobileSlideInterval = setTimeout(nextSlide, randomDelay());
-        }
-        mobileSlideInterval = setTimeout(nextSlide, randomDelay());
-    }
-
     function pauseMobileSlider() {
         if (mobileSlideInterval) clearInterval(mobileSlideInterval);
     }
+
     function resumeMobileSlider() {
         startMobileSlider();
     }
@@ -920,7 +917,7 @@
         });
     }
 
-    // НАСТРОЙКА КНОПОК НАВИГАЦИИ (ПК)
+    // ПК КНОПКИ
     document.getElementById("shopLink")?.addEventListener("click", (e) => {
         e.preventDefault();
         window.open("https://www.ladygaga.com/us-en/shop/collections/all", "_blank");
