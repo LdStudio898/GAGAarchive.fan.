@@ -616,46 +616,21 @@
 </div>
 
 <script>
-    // МАССИВ ФОТОГРАФИЙ
-     const images = [
-        "images/slide1.jpg",
-        "images/slide2.jpg",
-        "images/slide3.jpg",
-        "images/slide4.jpg",
-        "images/slide5.jpg",
-        "images/slide6.jpg",
-        "images/slide7.jpg",
-        "images/slide8.jpg",
-        "images/slide9.jpg",
-        "images/slide10.jpg",
-        "images/slide11.jpg",
-        "images/slide12.jpg",
-        "images/slide13.jpg",
-        "images/slide14.jpg",
-        "images/slide15.jpg",
-        "images/slide16.jpg",
-        "images/slide17.jpg",
-        "images/slide18.jpg",
-        "images/slide19.jpg",
-        "images/slide20.jpg",
-        "images/slide21.jpg",
-        "images/slide22.jpg",
-        "images/slide23.jpg",
-        "images/slide24.jpg",
-        "images/slide25.jpg",
-        "images/slide26.jpg",
-        "images/slide27.jpg",
-        "images/slide28.jpg",
-        "images/slide29.jpg",
-        "images/slide30.jpg",
-        "images/slide31.jpg",
-        "images/slide32.jpg",
-        "images/slide33.jpg",
-        "images/slide34.jpg",
-        "images/slide35.jpg",
-        "images/slide36.jpg",
-        "images/slide37.jpg",
-        "images/slide38.jpg",
+    // МАССИВ ФОТОГРАФИЙ (38 ФОТО)
+    const images = [
+        "images/slide1.jpg", "images/slide2.jpg", "images/slide3.jpg",
+        "images/slide4.jpg", "images/slide5.jpg", "images/slide6.jpg",
+        "images/slide7.jpg", "images/slide8.jpg", "images/slide9.jpg",
+        "images/slide10.jpg", "images/slide11.jpg", "images/slide12.jpg",
+        "images/slide13.jpg", "images/slide14.jpg", "images/slide15.jpg",
+        "images/slide16.jpg", "images/slide17.jpg", "images/slide18.jpg",
+        "images/slide19.jpg", "images/slide20.jpg", "images/slide21.jpg",
+        "images/slide22.jpg", "images/slide23.jpg", "images/slide24.jpg",
+        "images/slide25.jpg", "images/slide26.jpg", "images/slide27.jpg",
+        "images/slide28.jpg", "images/slide29.jpg", "images/slide30.jpg",
+        "images/slide31.jpg", "images/slide32.jpg", "images/slide33.jpg",
+        "images/slide34.jpg", "images/slide35.jpg", "images/slide36.jpg",
+        "images/slide37.jpg", "images/slide38.jpg"
     ];
 
     // ПК СЛАЙДЕР
@@ -679,8 +654,8 @@
         const track = document.getElementById("mobileSliderTrack");
         if (!track) return;
         track.innerHTML = "";
-        // Дублируем 2 раза для плавной анимации
-        for (let i = 0; i < 2; i++) {
+        // Дублируем 3 раза для плавной анимации (чтобы всегда было видно фото)
+        for (let i = 0; i < 3; i++) {
             images.forEach(img => {
                 const imgElement = document.createElement("img");
                 imgElement.src = img;
@@ -691,7 +666,7 @@
         }
     }
 
-   // ═══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════
     // ПОЛНАЯ БИБЛИОТЕКА ПЕСЕН (23 ТРЕКА)
     // ═══════════════════════════════════════════════════════════════
      const songsDatabase = [
