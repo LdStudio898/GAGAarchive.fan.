@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>GAGA · Music Archive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Helvetica Neue', 'Arial', 'Segoe UI', sans-serif;
+            color: #ffffff;
+            padding: 0;
+            margin: 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 4px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-wrapper {
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .songs-container {
+            padding: 0 2rem 2rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .app-wrapper.with-sidebar .songs-container {
+            padding-right: 420px;
+        }
+
+        /* БОКОВАЯ ПАНЕЛЬ ДЛЯ ТЕКСТА */
+        .lyrics-sidebar {
+            position: fixed;
+            right: -420px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: #0a0a0a;
+            border-left: 1px solid #222;
+            z-index: 100;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.8);
+        }
+
+        .lyrics-sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #222;
+        }
+
+        .sidebar-header h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: 1px solid #333;
+            color: #aaa;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: 0.2s;
+        }
+
+        .close-sidebar:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        .sidebar-song-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .sidebar-song-album {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-lyrics-content {
+            font-family: monospace;
+            font-size: 0.75rem;
+            line-height: 1.6;
+            color: #ccc;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 99;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* ========== ШАПКА ========== */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .logo span {
+            font-weight: 300;
+            color: #888;
+        }
+
+        /* ========== ДЕСКТОПНОЕ МЕНЮ ========== */
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        /* ========== МОБИЛЬНОЕ МЕНЮ (ГАМБУРГЕР) ========== */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: 1px solid #333;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #0a0a0a;
+            z-index: 200;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+        .mobile-nav.open {
+            display: flex;
+        }
+        .mobile-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding: 0.5rem;
+        }
+        .close-mobile-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: 1px solid #333;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+        }
+
+        /* ========== СЛАЙДЕР (десктоп: бесконечная прокрутка) ========== */
+        .slider-container {
+            width: 100%;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 1rem;
+        }
+        .slider-track {
+            display: flex;
+            animation: scroll 40s linear infinite;
+            width: fit-content;
+        }
+        .slider-track img {
+            height: 200px;
+            width: auto;
+            object-fit: cover;
+            margin-right: 2px;
+            filter: grayscale(0.3);
+            transition: filter 0.3s;
+        }
+        .slider-track img:hover {
+            filter: grayscale(0);
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ========== СЛАЙДЕР (мобильный: слайд-шоу) ========== */
+        .mobile-slideshow {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 1rem;
+        }
+        .mobile-slideshow img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .mobile-slideshow img.active {
+            opacity: 1;
+        }
+
+        .stats {
+            color: #888;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 1.5rem 2rem 1rem 2rem;
+            border-left: 2px solid #fff;
+            padding-left: 1rem;
+        }
+
+        /* ========== КОНТРОЛЫ (десктоп) ========== */
+        .controls {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 1rem 1.5rem;
+            margin: 0 2rem 1.5rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .search-box {
+            flex: 3;
+            min-width: 200px;
+        }
+        .search-box input {
+            width: 100%;
+            background: #111;
+            border: 1px solid #333;
+            padding: 12px 20px;
+            color: white;
+            font-size: 0.8rem;
+            font-family: monospace;
+            outline: none;
+        }
+        .search-box input:focus {
+            border-color: #fff;
+        }
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: transparent;
+            border: 1px solid #333;
+            padding: 8px 20px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .filter-btn.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+        .filter-btn:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        /* ========== МОБИЛЬНЫЕ КОНТРОЛЫ ========== */
+        .mobile-controls {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 0 1rem 1.5rem 1rem;
+        }
+        .mobile-controls select {
+            background: #111;
+            border: 1px solid #333;
+            padding: 12px;
+            color: #fff;
+            font-size: 0.8rem;
+            font-family: monospace;
+        }
+
+        .songs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: #111;
+            border: 1px solid #222;
+        }
+
+        .song-card {
+            background: #0a0a0a;
+            padding: 1.2rem;
+            transition: 0.15s ease;
+            cursor: pointer;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .song-card:hover {
+            background: #141414;
+        }
+        .song-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .album-badge {
+            font-size: 0.55rem;
+            color: #666;
+            border: 1px solid #2a2a2a;
+            padding: 3px 8px;
+        }
+        .song-artist {
+            font-size: 0.65rem;
+            color: #555;
+            margin: 8px 0 12px;
+            text-transform: uppercase;
+        }
+        .controls-card {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        button.play-btn, button.download-btn, button.lyrics-btn {
+            background: transparent;
+            border: 1px solid #333;
+            padding: 5px 12px;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.1s;
+        }
+        button.play-btn:hover, button.download-btn:hover, button.lyrics-btn:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+        .lyrics-preview {
+            font-size: 0.65rem;
+            color: #555;
+            margin-top: 10px;
+            border-top: 1px solid #1a1a1a;
+            padding-top: 8px;
+            max-height: 60px;
+            overflow-y: auto;
+            line-height: 1.3;
+        }
+
+        .player-area {
+            margin: 2rem 2rem 0 2rem;
+            background: #050505;
+            border-top: 1px solid #222;
+            border-bottom: 1px solid #222;
+            padding: 1.2rem;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+            display: none;
+        }
+        .player-area.active {
+            display: block;
+        }
+        #nowPlaying {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-bottom: 0.5rem;
+        }
+        audio {
+            width: 100%;
+            filter: grayscale(1);
+        }
+
+        .player-placeholder {
+            margin: 2rem 2rem 0 2rem;
+            background: #050505;
+            border-top: 1px solid #222;
+            border-bottom: 1px solid #222;
+            padding: 1.5rem;
+            text-align: center;
+            color: #444;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        footer {
+            text-align: center;
+            margin: 2rem 2rem 0 2rem;
+            padding: 1.5rem 0;
+            color: #333;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            border-top: 1px solid #111;
+        }
+
+        /* ========== МОБИЛЬНЫЕ СТИЛИ ========== */
+        @media (max-width: 768px) {
+            .songs-grid {
+                grid-template-columns: 1fr;
+            }
+            .app-wrapper.with-sidebar .songs-container {
+                padding-right: 0;
+            }
+            .lyrics-sidebar {
+                width: 100%;
+                right: -100%;
+                padding: 1rem;
+            }
+            .site-header {
+                padding: 1rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-toggle {
+                display: block;
+            }
+            .controls {
+                display: none;
+            }
+            .mobile-controls {
+                display: flex;
+            }
+            .slider-container {
+                display: none;
+            }
+            .mobile-slideshow {
+                display: block;
+            }
+            .stats {
+                margin-left: 1rem;
+                margin-right: 1rem;
+            }
+            .player-area, .player-placeholder {
+                margin: 1rem;
+            }
+            .songs-container {
+                padding: 0 1rem 1rem 1rem;
+            }
+            footer {
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="overlay" id="overlay"></div>
+<div class="lyrics-sidebar" id="lyricsSidebar">
+    <div class="sidebar-header">
+        <h3>📖 ПОЛНЫЙ ТЕКСТ</h3>
+        <button class="close-sidebar" id="closeSidebarBtn">✕ ЗАКРЫТЬ</button>
+    </div>
+    <div id="sidebarContent">
+        <div class="sidebar-song-title" id="sidebarTitle">—</div>
+        <div class="sidebar-song-album" id="sidebarAlbum">—</div>
+        <div class="sidebar-lyrics-content" id="sidebarLyrics">Выберите песню, чтобы увидеть полный текст</div>
+    </div>
+</div>
+
+<!-- МОБИЛЬНОЕ МЕНЮ (ГАМБУРГЕР) -->
+<div class="mobile-nav" id="mobileNav">
+    <button class="close-mobile-menu" id="closeMobileMenu">✕ ЗАКРЫТЬ</button>
+    <a href="#" id="mobileMusicLink">Music</a>
+    <a href="#" id="mobileShopLink">Shop</a>
+    <a href="#" id="mobileProjectsLink">Projects</a>
+    <a href="#" id="mobileLiveLink">Live</a>
+</div>
+
+<div class="app-wrapper" id="appWrapper">
+    <div class="site-header">
+        <div class="logo">GAGA<span>archive</span></div>
+        <div class="nav-links">
+            <a href="#" id="musicLink">Music</a>
+            <a href="#" id="shopLink">Shop</a>
+            <a href="#" id="projectsLink">Projects</a>
+            <a href="#" id="liveLink">Live</a>
+        </div>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    </div>
+
+    <!-- ДЕСКТОПНЫЙ СЛАЙДЕР (бесконечная прокрутка) -->
+    <div class="slider-container" id="sliderContainer">
+        <div class="slider-track" id="sliderTrack"></div>
+    </div>
+
+    <!-- МОБИЛЬНЫЙ СЛАЙДЕР (слайд-шоу) -->
+    <div class="mobile-slideshow" id="mobileSlideshow"></div>
+
+    <div class="stats">
+        ⟡ MONSTER ARCHIVE ⟡ 23 трека ⟡ ПОЛНЫЕ ТЕКСТЫ ⟡
+    </div>
+
+    <!-- ДЕСКТОПНЫЕ КОНТРОЛЫ -->
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="ПОИСК ПО НАЗВАНИЮ, ТЕКСТУ ИЛИ АЛЬБОМУ">
+        </div>
+        <div class="filter-group" id="filterButtons">
+            <button data-filter="all" class="filter-btn active">ВСЕ</button>
+            <button data-filter="az" class="filter-btn">A → Z</button>
+            <button data-filter="album" class="filter-btn">ПО АЛЬБОМАМ</button>
+        </div>
+    </div>
+
+    <!-- МОБИЛЬНЫЕ КОНТРОЛЫ -->
+    <div class="mobile-controls">
+        <div class="search-box">
+            <input type="text" id="mobileSearchInput" placeholder="ПОИСК ПО НАЗВАНИЮ, ТЕКСТУ ИЛИ АЛЬБОМУ">
+        </div>
+        <select id="mobileFilterSelect">
+            <option value="all">ВСЕ</option>
+            <option value="az">A → Z</option>
+            <option value="album">ПО АЛЬБОМАМ</option>
+        </select>
+    </div>
+
+    <div class="songs-container" id="songsContainer"></div>
+
+    <div class="player-placeholder" id="playerPlaceholder">
+        🎧 НАЖМИ "СЛУШАТЬ" НА ЛЮБОЙ ПЕСНЕ
+    </div>
+    <div class="player-area" id="playerArea">
+        <div id="nowPlaying">🎧 ВЫБЕРИ ПЕСНЮ</div>
+        <audio id="audioPlayer" controls></audio>
+    </div>
+    <footer>LADY GAGA · FAN ARCHIVE · ПОЛОЖИ MP3 В ПАПКУ /songs/АЛЬБОМ/ФАЙЛ.mp3</footer>
+</div>
+
+<script>
+    // ========== ФОТО ДЛЯ СЛАЙДЕРА ==========
+    const images = [
+        "images/slide1.jpg", "images/slide2.jpg", "images/slide3.jpg",
+        "images/slide4.jpg", "images/slide5.jpg", "images/slide6.jpg",
+        "images/slide7.jpg", "images/slide8.jpg", "images/slide9.jpg",
+        "images/slide10.jpg", "images/slide11.jpg", "images/slide12.jpg",
+        "images/slide13.jpg", "images/slide14.jpg", "images/slide15.jpg",
+        "images/slide16.jpg", "images/slide17.jpg", "images/slide18.jpg",
+        "images/slide19.jpg", "images/slide20.jpg", "images/slide21.jpg",
+        "images/slide22.jpg", "images/slide23.jpg", "images/slide24.jpg",
+        "images/slide25.jpg", "images/slide26.jpg", "images/slide27.jpg",
+        "images/slide28.jpg", "images/slide29.jpg", "images/slide30.jpg",
+        "images/slide31.jpg", "images/slide32.jpg", "images/slide33.jpg",
+        "images/slide34.jpg", "images/slide35.jpg", "images/slide36.jpg",
+        "images/slide37.jpg", "images/slide38.jpg"
+    ];
+
+    // ДЕСКТОПНЫЙ СЛАЙДЕР (бесконечная прокрутка)
+    function initSlider() {
+        const track = document.getElementById("sliderTrack");
+        if (!track) return;
+        track.innerHTML = "";
+        for (let i = 0; i < 2; i++) {
+            images.forEach(img => {
+                const imgElement = document.createElement("img");
+                imgElement.src = img;
+                imgElement.alt = "Lady Gaga";
+                imgElement.onerror = function() { this.style.display = "none"; };
+                track.appendChild(imgElement);
+            });
+        }
+    }
+
+    // МОБИЛЬНЫЙ СЛАЙДЕР (слайд-шоу)
+    let slideIndex = 0;
+    let slideInterval;
+    function initMobileSlideshow() {
+        const container = document.getElementById("mobileSlideshow");
+        if (!container) return;
+        container.innerHTML = "";
+        images.forEach((img, idx) => {
+            const imgElement = document.createElement("img");
+            imgElement.src = img;
+            imgElement.alt = "Lady Gaga";
+            imgElement.classList.add(idx === 0 ? "active" : "");
+            imgElement.onerror = function() { this.style.display = "none"; };
+            container.appendChild(imgElement);
+        });
+        startSlideshow();
+    }
+
+    function startSlideshow() {
+        if (slideInterval) clearInterval(slideInterval);
+        slideInterval = setInterval(() => {
+            const slides = document.querySelectorAll("#mobileSlideshow img");
+            if (slides.length === 0) return;
+            slides[slideIndex].classList.remove("active");
+            slideIndex = (slideIndex + 1) % slides.length;
+            slides[slideIndex].classList.add("active");
+        }, 5000);
+    }
+
+    // ========== БИБЛИОТЕКА ПЕСЕН (23 ТРЕКА) ==========
+    const songsDatabase = [
+        { id: 1, title: "Poker Face", album: "The Fame", year: 2008, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Poker_Face_47836180.mp3", folder: "The Fame", lyrics: `[Intro]\nMum-mum-mum-mah\n\n[Verse 1]\nI wanna hold 'em like they do in Texas, please\nFold 'em, let 'em hit me, raise it, baby, stay with me\nLoveGame intuition, play the cards with spades to start\nAnd after he's been hooked, I'll play the one that's on his heart\n\n[Chorus]\nCan't read my, can't read my\nNo, he can't read my poker face\n(She's got me like nobody)\nCan't read my, can't read my\nNo, he can't read my poker face` },
+        { id: 2, title: "Just Dance", album: "The Fame Monster", year: 2009, artist: "Lady Gaga ft. Colby O'Donis", fileName: "Lady_Gaga_-_Just_Dance_75950063.mp3", folder: "The Fame Monster", lyrics: `[Chorus]\nJust dance, gonna be okay, da-da-doo-doot-n\nJust dance, spin that record, babe, da-da-doo-doot-n\nJust dance, gonna be okay\nDa-da-da-dance, dance, dance\n\n[Verse 1]\nI've had a little bit too much, much\nAll of the people start to rush` },
+        { id: 3, title: "Monster", album: "The Fame Monster", year: 2009, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Monster_48004296.mp3", folder: "The Fame Monster", lyrics: `[Chorus]\nThat boy is a monster (Mo-mo-mo-monster)\nThat boy is a monster\n\n[Verse 1]\nLook at him, look at me\nThat boy is bad and honestly\nHe's a wolf in disguise\nBut I can't stop staring in those evil eyes` },
+        { id: 4, title: "LoveGame", album: "The Fame Monster", year: 2009, artist: "Lady Gaga", fileName: "Lady_Gaga_-_LoveGame_47836176.mp3", folder: "The Fame Monster", lyrics: `[Intro]\nLet's have some fun, this beat is sick\nI wanna take a ride on your disco stick\n\n[Chorus]\nLet's play a love game, play a love game\nDo you want love or you want fame?\nAre you in the game?\nDoin' the love game` },
+        { id: 5, title: "Telephone", album: "The Fame Monster", year: 2009, artist: "Lady Gaga ft. Beyoncé", fileName: "Lady_Gaga_-_Telephone_47836172.mp3", folder: "The Fame Monster", lyrics: `[Intro]\nHello, hello, baby, you called? I can't hear a thing\n\n[Chorus]\nStop callin', stop callin', I don't wanna think anymore\nI left my head and my heart on the dance floor\nEh, eh, eh, eh, eh, eh, eh, eh, eh, eh\nStop telephoning me!` },
+        { id: 6, title: "Bad Romance", album: "The Fame Monster", year: 2009, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Bad_Romance_47836164.mp3", folder: "The Fame Monster", lyrics: `[Refrain]\nRa, ra, ah-ah-ah\nRoma, roma-ma\nGaga, ooh, la, la\nWant your bad romance\n\n[Chorus]\nI want your love and I want your revenge\nYou and me could write a bad romance` },
+        { id: 7, title: "Alejandro", album: "The Fame Monster", year: 2009, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Alejandro_47836166.mp3", folder: "The Fame Monster", lyrics: `[Chorus]\nDon't call my name, don't call my name, Alejandro\nI'm not your babe, I'm not your babe, Fernando\nDon't wanna kiss, don't wanna touch\nJust smoke my cigarette and hush\nDon't call my name, don't call my name, Roberto` },
+        { id: 8, title: "Americano", album: "Born This Way", year: 2011, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Americano_48201169.mp3", folder: "Born This Way", lyrics: `[Chorus]\nAh-ah-ah-ah-ah-ah, América\nAmericano\n\n[Verse 1]\nI met a girl in East LA\nIn floral shorts as sweet as May\nWe fell in love\nBut not in court` },
+        { id: 9, title: "Scheiße", album: "Born This Way", year: 2011, artist: "Lady Gaga", fileName: "Lady_Gaga_-_ScheiBe_80227033.mp3", folder: "Born This Way", lyrics: `[Intro]\n(I don't speak German, but I can if you like)\nIch schleiban austa be clair, es kumpent madre monstère\n\n[Chorus]\nI wish that I could dance on a single prayer\nI wish I could be strong without somebody there` },
+        { id: 10, title: "Judas", album: "Born This Way", year: 2011, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Judas_48201167.mp3", folder: "Born This Way", lyrics: `[Refrain]\nJudas, Juda-ah-ah\nJudas, Juda-ah-ah\n\n[Chorus]\nI'm just a Holy Fool, oh, baby, it's so cruel\nBut I'm still in love with Judas, baby` },
+        { id: 11, title: "Applause", album: "Artpop", year: 2013, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Applause_48380322.mp3", folder: "Artpop", lyrics: `[Chorus]\nI live for the applause, applause, applause\nI live for the applause-plause, live for the applause-plause\nLive for the way that you cheer and scream for me\n\n[Bridge]\nA-P-P-L-A-U-S-E\nA-R-T-P-O-P` },
+        { id: 12, title: "GUY", album: "Artpop", year: 2013, artist: "Lady Gaga", fileName: "Lady_Gaga_-_GUY_48380296.mp3", folder: "Artpop", lyrics: `[Chorus]\nI wanna be that guy (G.U.Y.)\nI wanna be that guy (G.U.Y.)\nThe girl under you, guy` },
+        { id: 13, title: "Perfect Illusion", album: "Joanne", year: 2016, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Perfect_Illusion_48198470.mp3", folder: "Joanne", lyrics: `[Chorus]\nIt wasn't love, it wasn't love\nIt was a perfect illusion\nMistaken for love, it wasn't love\nIt was a perfect illusion` },
+        { id: 14, title: "Perfect Celebrity", album: "Mayhem", year: 2024, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Perfect_Celebrity_79164841.mp3", folder: "Mayhem", lyrics: `[Chorus]\nSo rip off my face in this photograph\nYou make me money, I'll make you laugh\nYou love to hate me\nI'm the perfect celebrity` },
+        { id: 15, title: "Disease", album: "Mayhem", year: 2024, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Disease_79164838.mp3", folder: "Mayhem", lyrics: `[Chorus]\nI could play the doctor, I can cure your disease\nIf you were a sinner, I could make you believe\nLay you down like one, two, three\nEyes roll back in ecstasy` },
+        { id: 16, title: "The Dead Dance", album: "Mayhem", year: 2024, artist: "Lady Gaga", fileName: "Lady_Gaga_-_The_Dead_Dance_80153569.mp3", folder: "Mayhem", lyrics: `[Chorus]\nYeah i'll keep on dancing\nUntil I'm dead\nDancing until I'm dead\n'Cause when you killed me inside\nThat's when I came alive` },
+        { id: 17, title: "Garden Of Eden", album: "Mayhem", year: 2024, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Garden_Of_Eden_79164840.mp3", folder: "Mayhem", lyrics: `[Chorus]\nI could be your girlfriend for the weekend\nYou could be my boyfriend for the night\nTake you to the Garden of Eden\nPoison apple, take a bite` },
+        { id: 18, title: "LoveDrug", album: "Mayhem", year: 2024, artist: "Lady Gaga", fileName: "Lady_Gaga_-_LoveDrug_79164845.mp3", folder: "Mayhem", lyrics: `[Chorus]\nI don't wanna feel, I don't wanna cry\nSo I'm gonna dance until I feel alright\nI just need a dose of the right stuff\nI just need a hit of your love drug` },
+        { id: 19, title: "Abracadabra", album: "Mayhem", year: 2024, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Abracadabra_79149382.mp3", folder: "Mayhem", lyrics: `[Chorus]\nAbracadabra, amor-oo-na-na\nAbracadabra, morta-oo-ga-ga\nIn her tongue she said, "Death or love tonight"` },
+        { id: 20, title: "Shadow Of A Man", album: "Mayhem", year: 2024, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Shadow_Of_A_Man_79164848.mp3", folder: "Mayhem", lyrics: `[Chorus]\nI don't wanna fade into the darkness tonight\nShow me the light\nI don't wanna be the one to fall on the knife\nI'll dance in the shadow of a man` },
+        { id: 21, title: "Glamorous Life", album: "The Devil Versus Prada 2", year: 2024, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Glamorous_Life_81412800.mp3", folder: "The Devil Versus Prada 2", lyrics: `[Chorus]\nI might need a hero to stop me from breaking\nOr I'll be the villain and feed off the pain\nOnly wanna drive in a fast world\nI'll just crash 'til I die of the glamorous life` },
+        { id: 22, title: "Shape Of A Woman", album: "The Devil Versus Prada 2", year: 2024, artist: "Lady Gaga", fileName: "Lady_Gaga_-_Shape_of_a_Woman_81412775.mp3", folder: "The Devil Versus Prada 2", lyrics: `[Chorus]\nShape of a woman\nSee the violet in her eyes, body so ethereal\nSee me to my grave 'cause I found God\nIn the shape of a woman` },
+        { id: 23, title: "Runway", album: "The Devil Versus Prada 2", year: 2024, artist: "Lady Gaga ft. Doechii", fileName: "Lady_Gaga_-_Runway_81248168.mp3", folder: "The Devil Versus Prada 2", lyrics: `[Chorus]\nTurn it up, turn around\nMonday through Sunday\nI can turn a dance floor into a runway` }
+    ];
+
+    function getSongUrl(song) {
+        return `songs/${encodeURIComponent(song.folder)}/${encodeURIComponent(song.fileName)}`;
+    }
+
+    let currentFilter = "all";
+    let searchQuery = "";
+
+    function openLyricsSidebar(song) {
+        document.getElementById("sidebarTitle").innerText = song.title;
+        document.getElementById("sidebarAlbum").innerText = `${song.album} (${song.year})`;
+        document.getElementById("sidebarLyrics").innerHTML = song.lyrics.replace(/\n/g, '<br>');
+        document.getElementById("lyricsSidebar").classList.add("open");
+        document.getElementById("overlay").classList.add("active");
+        document.getElementById("appWrapper").classList.add("with-sidebar");
+    }
+
+    function closeLyricsSidebar() {
+        document.getElementById("lyricsSidebar").classList.remove("open");
+        document.getElementById("overlay").classList.remove("active");
+        document.getElementById("appWrapper").classList.remove("with-sidebar");
+    }
+
+    function renderSongs() {
+        let filtered = [...songsDatabase];
+        if (searchQuery.trim() !== "") {
+            const q = searchQuery.trim().toLowerCase();
+            filtered = filtered.filter(s => s.title.toLowerCase().includes(q) || s.lyrics.toLowerCase().includes(q) || s.album.toLowerCase().includes(q));
+        }
+        if (currentFilter === "az") filtered.sort((a,b) => a.title.localeCompare(b.title));
+        else if (currentFilter === "album") filtered.sort((a,b) => a.album.localeCompare(b.album) || a.title.localeCompare(b.title));
+        else filtered.sort((a,b) => a.id - b.id);
+
+        const container = document.getElementById("songsContainer");
+        if (!container) return;
+
+        if (currentFilter === "album") {
+            let byAlbum = {};
+            filtered.forEach(song => { if (!byAlbum[song.album]) byAlbum[song.album] = []; byAlbum[song.album].push(song); });
+            let html = "";
+            for (let [album, songs] of Object.entries(byAlbum)) {
+                html += `<div class="album-section" style="margin-top: 1.5rem;"><div class="album-title" style="font-size:0.9rem; margin-bottom:0.5rem; letter-spacing:2px;">${album}</div><div class="songs-grid">`;
+                html += songs.map(s => renderSongCard(s)).join("");
+                html += `</div></div>`;
+            }
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = `<div class="songs-grid">${filtered.map(s => renderSongCard(s)).join("")}</div>`;
+        }
+        attachEvents();
+    }
+
+    function renderSongCard(song) {
+        const preview = song.lyrics.substring(0, 80).replace(/\n/g, ' ') + (song.lyrics.length > 80 ? '…' : '');
+        return `
+            <div class="song-card" data-id="${song.id}">
+                <div class="song-title">
+                    ${song.title}
+                    <span class="album-badge">${song.year}</span>
+                </div>
+                <div class="song-artist">${song.artist}</div>
+                <div class="controls-card">
+                    <button class="play-btn" data-id="${song.id}">▶ СЛУШАТЬ</button>
+                    <button class="download-btn" data-id="${song.id}">⬇ СКАЧАТЬ</button>
+                    <button class="lyrics-btn" data-id="${song.id}">📖 ТЕКСТ</button>
+                </div>
+                <div class="lyrics-preview">${preview}</div>
+            </div>
+        `;
+    }
+
+    function attachEvents() {
+        document.querySelectorAll('.play-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const song = songsDatabase.find(s => s.id === parseInt(btn.dataset.id));
+                if (song) playSong(song);
+            });
+        });
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const song = songsDatabase.find(s => s.id === parseInt(btn.dataset.id));
+                if (song) await downloadSong(song);
+            });
+        });
+        document.querySelectorAll('.lyrics-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const song = songsDatabase.find(s => s.id === parseInt(btn.dataset.id));
+                if (song) openLyricsSidebar(song);
+            });
+        });
+        document.querySelectorAll('.song-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                const song = songsDatabase.find(s => s.id === parseInt(card.dataset.id));
+                if (song) openLyricsSidebar(song);
+            });
+        });
+    }
+
+    function playSong(song) {
+        const audio = document.getElementById("audioPlayer");
+        const nowPlaying = document.getElementById("nowPlaying");
+        const playerArea = document.getElementById("playerArea");
+        const playerPlaceholder = document.getElementById("playerPlaceholder");
+        const url = getSongUrl(song);
+        
+        audio.src = url;
+        audio.play().catch(() => {
+            nowPlaying.innerHTML = `⚠️ Файл не найден: ${url}`;
+        });
+        nowPlaying.innerHTML = `▶ СЕЙЧАС ИГРАЕТ: ${song.title} — ${song.album} (${song.year})`;
+        
+        playerArea.classList.add("active");
+        playerPlaceholder.style.display = "none";
+    }
+
+    async function downloadSong(song) {
+        const url = getSongUrl(song);
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error();
+            const blob = await res.blob();
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${song.title} - Lady Gaga.mp3`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        } catch {
+            alert(`Файл не найден: ${url}`);
+        }
+    }
+
+    function updateAll() { renderSongs(); }
+
+    // НАСТРОЙКА КНОПОК НАВИГАЦИИ (десктоп и мобильные)
+    function setupNavLinks() {
+        const links = [
+            { id: "shopLink", url: "https://www.ladygaga.com/us-en/shop/collections/all" },
+            { id: "mobileShopLink", url: "https://www.ladygaga.com/us-en/shop/collections/all" },
+            { id: "projectsLink", url: "https://bornthisway.foundation/" },
+            { id: "mobileProjectsLink", url: "https://bornthisway.foundation/" },
+            { id: "liveLink", url: "https://www.ladygaga.com/us-en/live" },
+            { id: "mobileLiveLink", url: "https://www.ladygaga.com/us-en/live" }
+        ];
+        links.forEach(link => {
+            const el = document.getElementById(link.id);
+            if (el) {
+                el.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    window.open(link.url, "_blank");
+                });
+            }
+        });
+        
+        document.getElementById("musicLink")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+        document.getElementById("mobileMusicLink")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.getElementById("mobileNav").classList.remove("open");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+
+    // МОБИЛЬНОЕ МЕНЮ
+    document.getElementById("mobileMenuToggle")?.addEventListener("click", () => {
+        document.getElementById("mobileNav").classList.add("open");
+    });
+    document.getElementById("closeMobileMenu")?.addEventListener("click", () => {
+        document.getElementById("mobileNav").classList.remove("open");
+    });
+
+    // ПОИСК (десктоп + мобильный синхронизация)
+    const searchInput = document.getElementById("searchInput");
+    const mobileSearchInput = document.getElementById("mobileSearchInput");
+    if (searchInput && mobileSearchInput) {
+        searchInput.addEventListener("input", (e) => {
+            searchQuery = e.target.value;
+            mobileSearchInput.value = searchQuery;
+            updateAll();
+        });
+        mobileSearchInput.addEventListener("input", (e) => {
+            searchQuery = e.target.value;
+            searchInput.value = searchQuery;
+            updateAll();
+        });
+    }
+
+    // ФИЛЬТРЫ (десктоп кнопки + мобильный select)
+    const filterBtns = document.querySelectorAll("[data-filter]");
+    const mobileFilterSelect = document.getElementById("mobileFilterSelect");
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            filterBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentFilter = btn.dataset.filter;
+            if (mobileFilterSelect) mobileFilterSelect.value = currentFilter;
+            updateAll();
+        });
+    });
+    
+    if (mobileFilterSelect) {
+        mobileFilterSelect.addEventListener("change", (e) => {
+            currentFilter = e.target.value;
+            filterBtns.forEach(btn => {
+                if (btn.dataset.filter === currentFilter) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+            updateAll();
+        });
+    }
+
+    document.getElementById("closeSidebarBtn").addEventListener("click", closeLyricsSidebar);
+    document.getElementById("overlay").addEventListener("click", closeLyricsSidebar);
+
+    // ЗАПУСК
+    initSlider();
+    initMobileSlideshow();
+    setupNavLinks();
+    renderSongs();
+</script>
+</body>
+</html>
