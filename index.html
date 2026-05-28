@@ -791,39 +791,74 @@
         window.addEventListener('storage', (e) => { if (e.key === 'gaga_news') loadNewsForSidebar(); });
     }
 
-    // ========== ГАЛЕРЕЯ ==========
-    function renderGallery() {
-        const grid = document.getElementById("galleryGrid");
-        if (!grid) return;
-        grid.innerHTML = "";
-        pictureFiles.forEach((src, idx) => {
-            const item = document.createElement("div");
-            item.className = "gallery-item";
-            item.innerHTML = `
-                <img src="${src}" alt="Gallery ${idx+1}" loading="lazy" onerror="this.style.display='none'">
-                <button class="download-btn" data-src="${src}" data-name="gaga_${idx+1}.jpg">⬇ СКАЧАТЬ</button>
-            `;
-            grid.appendChild(item);
-        });
-        document.querySelectorAll('.gallery-item .download-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const url = btn.dataset.src;
-                const name = btn.dataset.name;
-                try {
-                    const res = await fetch(url);
-                    if (!res.ok) throw new Error();
-                    const blob = await res.blob();
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = name;
-                    a.click();
-                    URL.revokeObjectURL(a.href);
-                } catch { alert(`Не удалось скачать: ${url}`); }
-            });
-        });
-    }
+            /* ГАЛЕРЕЯ — ФОТО БЕЗ ОБРЕЗАНИЯ */
+        .gallery-container {
+            display: none;
+            padding: 0 2rem 2rem 2rem;
+        }
+        .gallery-container.active {
+            display: block;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .gallery-item {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 1rem;
+            text-align: center;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .gallery-item:hover {
+            border-color: #555;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: grayscale(0.3);
+            transition: filter 0.2s;
+        }
+        .gallery-item img:hover {
+            filter: grayscale(0);
+        }
+        .gallery-item .download-btn {
+            margin-top: 0.8rem;
+            background: transparent;
+            border: 1px solid #333;
+            padding: 6px 12px;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: auto;
+            display: inline-block;
+        }
+        .gallery-item .download-btn:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
 
+        @media (max-width: 768px) {
+            .gallery-container {
+                padding: 0 1rem 1rem 1rem;
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+            .gallery-item {
+                padding: 0.8rem;
+            }
+        }
+    
     // ========== ПЕРЕКЛЮЧЕНИЕ МЕЖДУ MUSIC И PICTURES ==========
     function showMusic() {
         const musicSection = document.querySelector('.music-section');
