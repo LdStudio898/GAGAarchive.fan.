@@ -145,6 +145,7 @@
             font-size: 0.7rem;
             color: #aaa;
             z-index: 100;
+            border-radius: 20px;
         }
         .status.success {
             border-color: #00ff00;
@@ -159,6 +160,10 @@
             font-size: 0.7rem;
             text-align: center;
             margin-top: 2rem;
+        }
+        hr {
+            border-color: #222;
+            margin: 1rem 0;
         }
     </style>
 </head>
@@ -184,10 +189,9 @@
 <div class="status" id="status">🟢 ГОТОВО</div>
 
 <script>
-    // ⚠️ ⚠️ ⚠️ ВСТАВЬ СВОИ ДАННЫЕ С JSONBIN.IO ⚠️ ⚠️ ⚠️
-    const JSONBIN_BIN_ID = "ТВОЙ_BIN_ID";        // Замени!
-    const JSONBIN_API_KEY = "ТВОЙ_SECRET_KEY";   // Замени!
-    // ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️ ⚠️
+    // ⚠️ ТВОИ ДАННЫЕ ИЗ JSONBIN.IO ⚠️
+    const JSONBIN_BIN_ID = "6a18065dddf5aa59f76f33fd";
+    const JSONBIN_API_KEY = "$2a$10$Q.oT76K01L8Ec3NOZTDgM.E0tki.OTODFHOpSA97fHFExeMVZ5xD.";
 
     let newsArray = [];
     let tempImages = [];
@@ -207,15 +211,22 @@
         try {
             showStatus("Загрузка новостей...");
             const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                headers: {
-                    "X-Master-Key": JSONBIN_API_KEY
-                }
+                headers: { "X-Master-Key": JSONBIN_API_KEY }
             });
             
             if (!response.ok) throw new Error("Ошибка загрузки");
             
             const data = await response.json();
-            newsArray = data.record.news || [];
+            // ПРОВЕРЯЕМ СТРУКТУРУ
+            if (data.record && data.record.news) {
+                newsArray = data.record.news;
+            } else if (Array.isArray(data.record)) {
+                newsArray = data.record;
+            } else if (data.news) {
+                newsArray = data.news;
+            } else {
+                newsArray = [];
+            }
             renderNewsList();
             showStatus("Новости загружены!");
         } catch (error) {
@@ -230,16 +241,36 @@
     async function saveNewsToServer() {
         try {
             showStatus("Сохранение...");
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+            
+            // ПОЛУЧАЕМ ТЕКУЩИЕ ДАННЫЕ
+            const getResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                headers: { "X-Master-Key": JSONBIN_API_KEY }
+            });
+            
+            if (!getResponse.ok) throw new Error("Не удалось получить данные");
+            
+            const currentData = await getResponse.json();
+            let record = currentData.record;
+            
+            // ЕСЛИ RECORD НЕ ОБЪЕКТ, СОЗДАЁМ НОВЫЙ
+            if (!record || typeof record !== 'object') {
+                record = {};
+            }
+            
+            // ОБНОВЛЯЕМ НОВОСТИ
+            record.news = newsArray;
+            
+            // СОХРАНЯЕМ
+            const putResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "X-Master-Key": JSONBIN_API_KEY
                 },
-                body: JSON.stringify({ news: newsArray })
+                body: JSON.stringify(record)
             });
             
-            if (!response.ok) throw new Error("Ошибка сохранения");
+            if (!putResponse.ok) throw new Error("Ошибка сохранения");
             
             showStatus("Сохранено!");
             renderNewsList();
@@ -264,7 +295,7 @@
                 <div class="news-date">📅 ${escapeHtml(news.date)}</div>
                 <div style="font-weight:bold; margin:8px 0;">${escapeHtml(news.title)}</div>
                 <div style="color:#ccc; margin-bottom:8px;">${escapeHtml(news.content).substring(0, 100)}${news.content.length > 100 ? '…' : ''}</div>
-                ${news.images.length > 0 ? `<div>🖼️ ${news.images.length} фото</div>` : ''}
+                ${news.images && news.images.length > 0 ? `<div>🖼️ ${news.images.length} фото</div>` : ''}
                 <button class="delete-btn" data-id="${news.id}">🗑 УДАЛИТЬ</button>
             </div>
         `).join("");
@@ -346,7 +377,6 @@
         alert("✅ Новость опубликована и видна всем!");
     });
 
-    // ЗАПУСК
     loadNewsFromServer();
 </script>
 </body>
