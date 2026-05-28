@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>GAGA · Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #000000;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            color: #ffffff;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2rem;
+            letter-spacing: 4px;
+            margin-bottom: 2rem;
+            border-left: 3px solid #fff;
+            padding-left: 1rem;
+        }
+        .news-form {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .news-form input, .news-form textarea {
+            width: 100%;
+            background: #111;
+            border: 1px solid #333;
+            padding: 12px;
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+        .news-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .image-input-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .image-input-area input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .add-image-btn {
+            background: transparent;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            color: #aaa;
+            cursor: pointer;
+        }
+        .add-image-btn:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+        .images-preview {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .image-preview-item {
+            position: relative;
+        }
+        .image-preview-item img {
+            height: 60px;
+            width: auto;
+            object-fit: cover;
+        }
+        .remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff2a7a;
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        .submit-btn {
+            background: transparent;
+            border: 1px solid #fff;
+            padding: 10px 24px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .submit-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+        .news-list {
+            margin-top: 2rem;
+        }
+        .news-item {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .news-date {
+            color: #666;
+            font-size: 0.7rem;
+        }
+        .delete-btn {
+            background: transparent;
+            border: 1px solid #ff2a7a;
+            padding: 4px 12px;
+            color: #ff2a7a;
+            cursor: pointer;
+            font-size: 0.6rem;
+            margin-top: 10px;
+        }
+        .delete-btn:hover {
+            background: #ff2a7a;
+            color: #000;
+        }
+        hr {
+            border-color: #222;
+            margin: 1rem 0;
+        }
+        .note {
+            color: #666;
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>✎ GAGAnews · АДМИНКА</h1>
+    
+    <div class="news-form">
+        <input type="text" id="newsTitle" placeholder="ЗАГОЛОВОК НОВОСТИ">
+        <textarea id="newsContent" placeholder="ТЕКСТ НОВОСТИ..."></textarea>
+        <div class="image-input-area">
+            <input type="text" id="imageUrl" placeholder="ССЫЛКА НА КАРТИНКУ (URL)">
+            <button class="add-image-btn" id="addImageBtn">+ ДОБАВИТЬ</button>
+        </div>
+        <div class="images-preview" id="imagesPreview"></div>
+        <button class="submit-btn" id="submitNewsBtn">📢 ОПУБЛИКОВАТЬ</button>
+    </div>
+
+    <h2 style="font-size:1rem; margin-bottom:1rem;">📰 УЖЕ ОПУБЛИКОВАНО</h2>
+    <div id="newsList"></div>
+    <div class="note">💡 Новости сохраняются в браузере. Открой index.html — они появятся в панели GAGAnews.</div>
+</div>
+
+<script>
+    let newsArray = [];
+    let tempImages = [];
+
+    function loadNews() {
+        const saved = localStorage.getItem("gaga_news");
+        if (saved) {
+            newsArray = JSON.parse(saved);
+        } else {
+            newsArray = [];
+        }
+        renderNewsList();
+    }
+
+    function saveNews() {
+        localStorage.setItem("gaga_news", JSON.stringify(newsArray));
+        renderNewsList();
+        // Оповещаем главную страницу об обновлении
+        localStorage.setItem("gaga_news_update", Date.now().toString());
+    }
+
+    function renderNewsList() {
+        const container = document.getElementById("newsList");
+        if (!container) return;
+        
+        if (newsArray.length === 0) {
+            container.innerHTML = '<div style="color:#444; text-align:center; padding:2rem;">📭 НОВОСТЕЙ ПОКА НЕТ</div>';
+            return;
+        }
+        
+        const sorted = [...newsArray].reverse();
+        container.innerHTML = sorted.map(news => `
+            <div class="news-item" data-id="${news.id}">
+                <div class="news-date">📅 ${news.date}</div>
+                <div style="font-weight:bold; margin:8px 0;">${escapeHtml(news.title)}</div>
+                <div style="color:#ccc; margin-bottom:8px;">${escapeHtml(news.content).substring(0, 100)}${news.content.length > 100 ? '…' : ''}</div>
+                ${news.images.length > 0 ? `<div>🖼️ ${news.images.length} фото</div>` : ''}
+                <button class="delete-btn" data-id="${news.id}">🗑 УДАЛИТЬ</button>
+            </div>
+        `).join("");
+        
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = parseInt(btn.dataset.id);
+                newsArray = newsArray.filter(n => n.id !== id);
+                saveNews();
+            });
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function updateImagesPreview() {
+        const previewDiv = document.getElementById("imagesPreview");
+        previewDiv.innerHTML = tempImages.map((url, index) => `
+            <div class="image-preview-item">
+                <img src="${escapeHtml(url)}" onerror="this.style.display='none'">
+                <button class="remove-image-btn" data-index="${index}">✕</button>
+            </div>
+        `).join("");
+        
+        document.querySelectorAll('.remove-image-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = parseInt(btn.dataset.index);
+                tempImages.splice(index, 1);
+                updateImagesPreview();
+            });
+        });
+    }
+
+    document.getElementById("addImageBtn")?.addEventListener("click", () => {
+        const url = document.getElementById("imageUrl").value.trim();
+        if (url) {
+            tempImages.push(url);
+            updateImagesPreview();
+            document.getElementById("imageUrl").value = "";
+        }
+    });
+
+    document.getElementById("submitNewsBtn")?.addEventListener("click", () => {
+        const title = document.getElementById("newsTitle").value.trim();
+        const content = document.getElementById("newsContent").value.trim();
+        
+        if (!title || !content) {
+            alert("Заполни заголовок и текст!");
+            return;
+        }
+        
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        
+        const newNews = {
+            id: Date.now(),
+            title: title,
+            content: content,
+            images: [...tempImages],
+            date: dateStr
+        };
+        
+        newsArray.push(newNews);
+        saveNews();
+        
+        document.getElementById("newsTitle").value = "";
+        document.getElementById("newsContent").value = "";
+        tempImages = [];
+        updateImagesPreview();
+        
+        alert("✅ Новость опубликована!");
+    });
+
+    loadNews();
+</script>
+</body>
+</html>
