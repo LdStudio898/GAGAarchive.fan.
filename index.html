@@ -44,15 +44,12 @@
             transition: all 0.3s ease;
         }
 
-        .app-wrapper.with-sidebar .songs-container {
-            padding-right: 420px;
-        }
-
-        .lyrics-sidebar {
+        /* ПАНЕЛЬ НОВОСТЕЙ (выезжает справа, широкая) */
+        .news-sidebar {
             position: fixed;
-            right: -420px;
+            right: -650px;
             top: 0;
-            width: 400px;
+            width: 650px;
             height: 100vh;
             background: #0a0a0a;
             border-left: 1px solid #222;
@@ -62,12 +59,17 @@
             padding: 2rem;
             box-shadow: -5px 0 30px rgba(0,0,0,0.8);
         }
-
-        .lyrics-sidebar.open {
+        .news-sidebar.open {
             right: 0;
         }
+        @media (max-width: 700px) {
+            .news-sidebar {
+                width: 90%;
+                right: -90%;
+            }
+        }
 
-        .sidebar-header {
+        .news-sidebar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -75,15 +77,13 @@
             padding-bottom: 1rem;
             border-bottom: 1px solid #222;
         }
-
-        .sidebar-header h3 {
+        .news-sidebar-header h3 {
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #888;
         }
-
-        .close-sidebar {
+        .close-news-sidebar {
             background: none;
             border: 1px solid #333;
             color: #aaa;
@@ -92,33 +92,115 @@
             font-size: 0.7rem;
             transition: 0.2s;
         }
-
-        .close-sidebar:hover {
+        .close-news-sidebar:hover {
             border-color: #fff;
             color: #fff;
         }
 
+        /* Стили новостей внутри панели */
+        .news-item {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .news-date {
+            color: #666;
+            font-size: 0.65rem;
+            margin-bottom: 0.5rem;
+        }
+        .news-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        .news-content {
+            color: #aaa;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .news-images {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .news-images img {
+            max-width: 100%;
+            height: auto;
+            max-height: 150px;
+            object-fit: contain;
+            border: 1px solid #333;
+        }
+        .empty-news {
+            text-align: center;
+            color: #444;
+            padding: 2rem;
+        }
+
+        /* ПАНЕЛЬ ТЕКСТА (как была) */
+        .lyrics-sidebar {
+            position: fixed;
+            right: -420px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: #0a0a0a;
+            border-left: 1px solid #222;
+            z-index: 101;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.8);
+        }
+        .lyrics-sidebar.open {
+            right: 0;
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #222;
+        }
+        .sidebar-header h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+        }
+        .close-sidebar {
+            background: none;
+            border: 1px solid #333;
+            color: #aaa;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .close-sidebar:hover {
+            border-color: #fff;
+            color: #fff;
+        }
         .sidebar-song-title {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
             color: #fff;
         }
-
         .sidebar-song-album {
             font-size: 0.7rem;
             color: #666;
-            text-transform: uppercase;
             margin-bottom: 1.5rem;
         }
-
         .sidebar-lyrics-content {
             font-family: monospace;
             font-size: 0.75rem;
             line-height: 1.6;
             color: #ccc;
             white-space: pre-wrap;
-            word-break: break-word;
         }
 
         .overlay {
@@ -131,7 +213,6 @@
             z-index: 99;
             display: none;
         }
-
         .overlay.active {
             display: block;
         }
@@ -145,7 +226,6 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-
         .logo {
             font-size: 2.5rem;
             font-weight: 700;
@@ -156,6 +236,31 @@
         .logo span {
             font-weight: 300;
             color: #888;
+        }
+
+        /* КНОПКА GAGAnews */
+        .gaganews-link {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 2px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .gaganews-link .gaga-part {
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #fff;
+            text-shadow: 0 0 5px #ff2a7a, 0 0 10px #ff2a7a;
+        }
+        .gaganews-link .news-part {
+            font-weight: 300;
+            color: #aaa;
+        }
+        .gaganews-link:hover .gaga-part {
+            text-shadow: 0 0 8px #ff2a7a, 0 0 15px #ff2a7a;
+        }
+        .gaganews-link:hover .news-part {
+            color: #fff;
         }
 
         .burger-menu {
@@ -195,6 +300,7 @@
             letter-spacing: 2px;
             padding: 1rem 0;
             border-bottom: 1px solid #222;
+            cursor: pointer;
         }
         .mobile-nav a:hover {
             color: #fff;
@@ -217,6 +323,7 @@
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            align-items: center;
         }
         .nav-links a {
             color: #aaa;
@@ -228,7 +335,7 @@
             color: #ffffff;
         }
 
-        /* ПК СЛАЙДЕР (движущийся) */
+        /* СЛАЙДЕРЫ */
         .slider-container {
             width: 100%;
             overflow: hidden;
@@ -256,7 +363,6 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* МОБИЛЬНЫЙ СЛАЙДЕР - 3 ФОТО НА ЭКРАНЕ, АВТО-ПРОКРУТКА */
         .mobile-slider-container {
             display: none;
             width: 100%;
@@ -542,6 +648,19 @@
 </head>
 <body>
 <div class="overlay" id="overlay"></div>
+
+<!-- ПАНЕЛЬ НОВОСТЕЙ (выезжает справа) -->
+<div class="news-sidebar" id="newsSidebar">
+    <div class="news-sidebar-header">
+        <h3>📰 GAGAnews</h3>
+        <button class="close-news-sidebar" id="closeNewsSidebarBtn">✕ ЗАКРЫТЬ</button>
+    </div>
+    <div id="newsSidebarContent">
+        <div class="empty-news">📭 ЗАГРУЗКА НОВОСТЕЙ...</div>
+    </div>
+</div>
+
+<!-- ПАНЕЛЬ ТЕКСТА ПЕСНИ -->
 <div class="lyrics-sidebar" id="lyricsSidebar">
     <div class="sidebar-header">
         <h3>📖 ПОЛНЫЙ ТЕКСТ</h3>
@@ -554,9 +673,11 @@
     </div>
 </div>
 
+<!-- МОБИЛЬНОЕ МЕНЮ -->
 <div class="mobile-nav" id="mobileNav">
     <button class="close-mobile-nav" id="closeMobileNav">✕</button>
     <a href="#" id="mobileMusicLink">Music</a>
+    <a href="#" id="mobileGagaNewsLink" class="gaganews-link"><span class="gaga-part">GAGA</span><span class="news-part">news</span></a>
     <a href="#" id="mobileShopLink">Shop</a>
     <a href="#" id="mobileProjectsLink">Projects</a>
     <a href="#" id="mobileLiveLink">Live</a>
@@ -571,6 +692,7 @@
             <span></span>
         </div>
         <div class="nav-links">
+            <a href="#" id="gagaNewsLink" class="gaganews-link"><span class="gaga-part">GAGA</span><span class="news-part">news</span></a>
             <a href="#" id="musicLink">Music</a>
             <a href="#" id="shopLink">Shop</a>
             <a href="#" id="projectsLink">Projects</a>
@@ -583,7 +705,7 @@
         <div class="slider-track" id="sliderTrack"></div>
     </div>
 
-    <!-- МОБИЛЬНЫЙ СЛАЙДЕР - 3 ФОТО НА ЭКРАНЕ, АВТО-ПРОКРУТКА -->
+    <!-- МОБИЛЬНЫЙ СЛАЙДЕР -->
     <div class="mobile-slider-container" id="mobileSliderContainer">
         <div class="mobile-slider-track" id="mobileSliderTrack"></div>
     </div>
@@ -616,7 +738,7 @@
 </div>
 
 <script>
-    // МАССИВ ФОТОГРАФИЙ (38 ФОТО)
+    // МАССИВ ФОТОГРАФИЙ
     const images = [
         "images/slide1.jpg", "images/slide2.jpg", "images/slide3.jpg",
         "images/slide4.jpg", "images/slide5.jpg", "images/slide6.jpg",
@@ -631,11 +753,10 @@
         "images/slide31.jpg", "images/slide32.jpg", "images/slide33.jpg",
         "images/slide34.jpg", "images/slide35.jpg", "images/slide36.jpg",
         "images/slide37.jpg", "images/slide38.jpg", "images/slide39.jpg",
-         "images/slide40.jpg", "images/slide41.jpg", "images/slide42.jpg",
-         "images/slide43.jpg", "images/slide44.jpg", "images/slide45.jpg",
+        "images/slide40.jpg", "images/slide41.jpg", "images/slide42.jpg",
+        "images/slide43.jpg", "images/slide44.jpg", "images/slide45.jpg"
     ];
 
-    // ПК СЛАЙДЕР
     function initSlider() {
         const track = document.getElementById("sliderTrack");
         if (!track) return;
@@ -651,12 +772,10 @@
         }
     }
 
-    // МОБИЛЬНЫЙ СЛАЙДЕР (дублируем фото для бесконечной прокрутки)
     function initMobileSlider() {
         const track = document.getElementById("mobileSliderTrack");
         if (!track) return;
         track.innerHTML = "";
-        // Дублируем 3 раза для плавной анимации (чтобы всегда было видно фото)
         for (let i = 0; i < 3; i++) {
             images.forEach(img => {
                 const imgElement = document.createElement("img");
@@ -733,6 +852,72 @@
     let currentFilter = "all";
     let searchQuery = "";
 
+    // ========== НОВОСТИ (загрузка из localStorage) ==========
+    let newsArray = [];
+
+    function loadNewsForSidebar() {
+        const saved = localStorage.getItem("gaga_news");
+        if (saved) {
+            newsArray = JSON.parse(saved);
+        } else {
+            newsArray = [];
+        }
+        renderNewsSidebar();
+    }
+
+    function renderNewsSidebar() {
+        const container = document.getElementById("newsSidebarContent");
+        if (!container) return;
+        
+        if (newsArray.length === 0) {
+            container.innerHTML = '<div class="empty-news">📭 ПОКА НЕТ НОВОСТЕЙ. ЗАЙДИ В АДМИНКУ, ЧТОБЫ ДОБАВИТЬ</div>';
+            return;
+        }
+        
+        const sorted = [...newsArray].reverse();
+        container.innerHTML = sorted.map(news => `
+            <div class="news-item">
+                <div class="news-date">📅 ${escapeHtml(news.date)}</div>
+                <div class="news-title">${escapeHtml(news.title)}</div>
+                <div class="news-content">${escapeHtml(news.content).replace(/\n/g, '<br>')}</div>
+                <div class="news-images">
+                    ${news.images.map(img => `<img src="${escapeHtml(img)}" onerror="this.style.display='none'">`).join('')}
+                </div>
+            </div>
+        `).join("");
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Следим за обновлениями новостей из админки
+    function watchNewsUpdates() {
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'gaga_news' || e.key === 'gaga_news_update') {
+                loadNewsForSidebar();
+            }
+        });
+    }
+
+    // ========== ОТКРЫТИЕ/ЗАКРЫТИЕ ПАНЕЛЕЙ ==========
+    function openNewsSidebar() {
+        document.getElementById("newsSidebar").classList.add("open");
+        document.getElementById("overlay").classList.add("active");
+        loadNewsForSidebar();
+    }
+
+    function closeNewsSidebar() {
+        document.getElementById("newsSidebar").classList.remove("open");
+        document.getElementById("overlay").classList.remove("active");
+    }
+
     function openLyricsSidebar(song) {
         document.getElementById("sidebarTitle").innerText = song.title;
         document.getElementById("sidebarAlbum").innerText = `${song.album} (${song.year})`;
@@ -748,6 +933,7 @@
         document.getElementById("appWrapper").classList.remove("with-sidebar");
     }
 
+    // ========== ОСТАЛЬНЫЕ ФУНКЦИИ (рендер песен, плеер и т.д.) ==========
     function renderSongs() {
         let filtered = [...songsDatabase];
         if (searchQuery.trim() !== "") {
@@ -862,7 +1048,7 @@
 
     function updateAll() { renderSongs(); }
 
-    // БУРГЕР-МЕНЮ
+    // ========== МЕНЮ ==========
     function initMobileMenu() {
         const burger = document.getElementById("burgerMenu");
         const mobileNav = document.getElementById("mobileNav");
@@ -892,6 +1078,12 @@
             mobileNav.classList.remove("open");
             overlay.classList.remove("active");
         });
+        document.getElementById("mobileGagaNewsLink")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            openNewsSidebar();
+            mobileNav.classList.remove("open");
+            overlay.classList.remove("active");
+        });
         document.getElementById("mobileShopLink")?.addEventListener("click", (e) => {
             e.preventDefault();
             window.open("https://www.ladygaga.com/us-en/shop/collections/all", "_blank");
@@ -913,6 +1105,10 @@
     }
 
     // ПК КНОПКИ
+    document.getElementById("gagaNewsLink")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        openNewsSidebar();
+    });
     document.getElementById("shopLink")?.addEventListener("click", (e) => {
         e.preventDefault();
         window.open("https://www.ladygaga.com/us-en/shop/collections/all", "_blank");
@@ -943,12 +1139,18 @@
         });
     });
     document.getElementById("closeSidebarBtn")?.addEventListener("click", closeLyricsSidebar);
-    document.getElementById("overlay")?.addEventListener("click", closeLyricsSidebar);
+    document.getElementById("closeNewsSidebarBtn")?.addEventListener("click", closeNewsSidebar);
+    document.getElementById("overlay")?.addEventListener("click", () => {
+        closeLyricsSidebar();
+        closeNewsSidebar();
+    });
 
     initSlider();
     initMobileSlider();
     initMobileMenu();
     renderSongs();
+    loadNewsForSidebar();
+    watchNewsUpdates();
 </script>
 </body>
 </html>
