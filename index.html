@@ -793,9 +793,36 @@
             url: "https://vkvideo.ru/video_ext.php?oid=-136641579&id=456242403&hash=9323ab1e6bacf942",
             embed: "https://vkvideo.ru/video_ext.php?oid=-136641579&id=456242403&hash=9323ab1e6bacf942",
             type: "vk",
-            duration: "Н/Д",
+            duration: "01:47:10",
             downloadUrl: "https://drive.google.com/uc?export=download&id="
-        }
+        },
+        {
+            id: 3,
+            title: "Lady Gaga - Abracadabra (Official Music Video)",
+            url: "https://vkvideo.ru/video_ext.php?oid=-234512564&id=456248894&hash=01849cc0d6748c34",
+            embed: "https://vkvideo.ru/video_ext.php?oid=-234512564&id=456248894&hash=01849cc0d6748c34",
+            type: "vk",
+            duration: "04:15",
+            downloadUrl: "https://drive.google.com/uc?export=download&id="
+        },
+        {
+            id: 4,
+            title: "LADY GAGA - ABRACADABRA LIVE AT THE 2026 GRAMMYS",
+            url: "https://ok.ru/video/11410624154299",
+            embed: "https://ok.ru/videoembed/11410624154299",
+            type: "ok",
+            duration: "04:16",
+            downloadUrl: "https://drive.google.com/uc?export=download&id="
+        },
+        {
+            id: 5,
+            title: "Lady Gaga, Doechii - RUNWAY (Official Music Video)",
+            url: "https://vk.com/video_ext.php?oid=-235971927&id=456239047&hash=c0e153bb58a8f509",
+            embed: "https://vk.com/video_ext.php?oid=-235971927&id=456239047&hash=c0e153bb58a8f509",
+            type: "vk",
+            duration: "02:58",
+            downloadUrl: "https://drive.google.com/uc?export=download&id="
+        }            
     ];
 
     let currentFilter = "all";
@@ -892,8 +919,42 @@
         document.getElementById('galleryContainer').classList.remove('active');
         document.getElementById('videoContainer').style.display = 'none';
     }
-
+        // ========== ОСТАНОВКА ВСЕЙ МУЗЫКИ ==========
+    function stopAllMusic() {
+        // ОСТАНАВЛИВАЕМ ГЛАВНЫЙ ПЛЕЕР (внизу страницы)
+        const audioPlayer = document.getElementById("audioPlayer");
+        if (audioPlayer) {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+        }
+        
+        // СБРАСЫВАЕМ ИНФОРМАЦИЮ О ТЕКУЩЕМ ТРЕКЕ
+        const nowPlaying = document.getElementById("nowPlaying");
+        if (nowPlaying) {
+            nowPlaying.innerHTML = "🎧 ВЫБЕРИ ПЕСНЮ";
+        }
+        
+        // УБИРАЕМ АКТИВНЫЙ КЛАСС С ПЛЕЕРА
+        const playerArea = document.getElementById("playerArea");
+        if (playerArea) {
+            playerArea.classList.remove("active");
+        }
+        
+        // ВОЗВРАЩАЕМ ПЛЕЙСХОЛДЕР
+        const playerPlaceholder = document.getElementById("playerPlaceholder");
+        if (playerPlaceholder) {
+            playerPlaceholder.style.display = "block";
+        }
+        
+        // ОСТАНАВЛИВАЕМ ВСЕ ВИДЕО НА СТРАНИЦЕ (если есть)
+        document.querySelectorAll('video').forEach(video => {
+            video.pause();
+        });
+    }
+    
     function showVideos() {
+        stopAllMusic();
+
         document.getElementById('homeSection').classList.add('hide');
         document.getElementById('musicSection').classList.remove('active');
         document.getElementById('videosContainer').classList.add('active');
@@ -928,6 +989,9 @@
         }
         if (url.includes('vimeo.com')) {
             return 'vimeo';
+        }
+        if (url.includes('ok.ru') || url.includes('odnoklassniki.ru')) {  // ← ДОБАВЬ ЭТУ СТРОКУ
+            return 'ok';
         }
         return 'unknown';
     }
