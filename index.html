@@ -626,10 +626,150 @@
             .videos-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
             .video-card video { max-height: 150px; }
             .home-section .welcome-text h1 { font-size: 2rem; }
+
+            /* ПАНЕЛЬ УПРАВЛЕНИЯ ГАЛЕРЕЕЙ НА ТЕЛЕФОНЕ */
+            .gallery-controls {
+                margin: 1rem 1rem 0 1rem !important;
+                padding: 0.8rem 1rem !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.5rem !important;
+            }
+            .gallery-controls .btn-group {
+                justify-content: center !important;
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
+                gap: 0.8rem !important;
+            }
         }
         @media (max-width: 1000px) and (min-width: 769px) {
             .songs-grid { grid-template-columns: repeat(2, 1fr); }
             .slider-track img { height: 120px; }
+        }
+
+        /* ПАНЕЛЬ УПРАВЛЕНИЯ ГАЛЕРЕЕЙ */
+        .gallery-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            margin: 1rem 2rem 0 2rem;
+            background: #0a0a0a;
+            border: 1px solid #222;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .gallery-controls .label {
+            color: #888;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .gallery-controls .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+        .gallery-controls .btn-group button {
+            background: transparent;
+            border: 1px solid #333;
+            padding: 6px 16px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .gallery-controls .btn-group button:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+        .gallery-controls .btn-group button.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-controls {
+                margin: 1rem 1rem 0 1rem;
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            .gallery-controls .btn-group {
+                justify-content: center;
+            }
+        }
+        /* ПОИСК ПО ВИДЕО */
+        .videos-search {
+            display: flex;
+            gap: 12px;
+            padding: 1rem 0;
+            margin-bottom: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .videos-search input {
+            flex: 3;
+            min-width: 250px;
+            background: #111;
+            border: 1px solid #333;
+            padding: 12px 20px;
+            color: white;
+            font-size: 0.8rem;
+            font-family: monospace;
+            outline: none;
+        }
+        .videos-search input:focus {
+            border-color: #fff;
+        }
+        .videos-search input::placeholder {
+            color: #555;
+        }
+        .search-clear-btn {
+            background: transparent;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .search-clear-btn:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+        .videos-search .search-results-count {
+            color: #666;
+            font-size: 0.7rem;
+            margin-left: auto;
+        }
+        .no-videos-found {
+            text-align: center;
+            color: #444;
+            padding: 3rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .videos-search {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .videos-search input {
+                min-width: unset;
+            }
+            .videos-search .search-results-count {
+                margin-left: 0;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -638,7 +778,7 @@
 
 <!-- ВИДЕО-ФОН -->
 <div class="video-container" id="videoContainer">
-    <video id="backgroundVideo" autoplay loop muted playsinline>
+    <video id="backgroundVideo" autoplay loop muted playsinline preload="auto">
         <source src="videos/background.mp4" type="video/mp4">
     </video>
 </div>
@@ -736,13 +876,29 @@
 
     <!-- ГАЛЕРЕЯ ФОТОГРАФИЙ -->
     <div class="gallery-container" id="galleryContainer">
+        <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
+        <div class="gallery-controls" id="galleryControls">
+            <span class="label">📐 КОЛИЧЕСТВО ФОТО В СТРОКЕ</span>
+            <div class="btn-group" id="galleryGridButtons">
+                <button data-cols="1">1</button>
+                <button data-cols="4">4</button>
+                <button data-cols="5" class="active">5</button>
+                <button data-cols="6">6</button>
+            </div>
+        </div>
         <div class="gallery-grid" id="galleryGrid"></div>
     </div>
 
     <!-- ВИДЕО-СЕКЦИЯ -->
-    <div class="videos-container" id="videosContainer">
-        <div class="videos-grid" id="videosGrid"></div>
+<div class="videos-container" id="videosContainer">
+    <!-- ПОИСК ПО ВИДЕО -->
+    <div class="videos-search">
+        <input type="text" id="videosSearchInput" placeholder="🔍 ПОИСК ПО ВИДЕО (например: Mayhem, Grammys, Coachella)">
+        <button id="videosSearchClear" class="search-clear-btn">✕ ОЧИСТИТЬ</button>
+        <span class="search-results-count" id="videosSearchCount">📹 0 видео</span>
     </div>
+    <div class="videos-grid" id="videosGrid"></div>
+</div>
 
     <footer>LADY GAGA · FAN ARCHIVE · VIDEO FROM APPLE MUSIC · MAYHEM REQUIEM</footer>
 </div>
@@ -776,6 +932,9 @@
         "images/slide28.jpg", "images/slide29.jpg", "images/slide30.jpg"
     ];
 
+    // ========== ПЕРЕМЕННАЯ ДЛЯ КОЛИЧЕСТВА КОЛОНОК В ГАЛЕРЕЕ ==========
+    let galleryColumns = 5;
+
     // ========== СПИСОК ВИДЕО ==========
     const videoFiles = [
         {
@@ -785,7 +944,7 @@
             embed: "https://vk.com/video_ext.php?oid=-136641579&id=456242923&hash=c52e4b4ca9b0ad60",
             type: "vk",
             duration: "01:07:10",
-            downloadUrl: "https://drive.google.com/uc?export="
+            downloadUrl: "https://drive.google.com/uc?export=download&id=1iLFMkp81-29DslCCg-he9dEDJ8QdMnHF"
         },
         {
             id: 2,
@@ -794,7 +953,7 @@
             embed: "https://vkvideo.ru/video_ext.php?oid=-136641579&id=456242403&hash=9323ab1e6bacf942",
             type: "vk",
             duration: "01:47:10",
-            downloadUrl: "https://drive.google.com/uc?export=download&id="
+            downloadUrl: "https://drive.google.com/uc?export=download&id=1iLFMkp81-29DslCCg-he9dEDJ8QdMnHF"
         },
         {
             id: 3,
@@ -803,7 +962,7 @@
             embed: "https://vkvideo.ru/video_ext.php?oid=-234512564&id=456248894&hash=01849cc0d6748c34",
             type: "vk",
             duration: "04:15",
-            downloadUrl: "https://drive.google.com/uc?export=download&id="
+            downloadUrl: "https://drive.google.com/uc?export=download&id=1iLFMkp81-29DslCCg-he9dEDJ8QdMnHF"
         },
         {
             id: 4,
@@ -812,7 +971,7 @@
             embed: "https://ok.ru/videoembed/11410624154299",
             type: "ok",
             duration: "04:16",
-            downloadUrl: "https://drive.google.com/uc?export=download&id="
+            downloadUrl: "https://drive.google.com/uc?export=download&id=1iLFMkp81-29DslCCg-he9dEDJ8QdMnHF"
         },
         {
             id: 5,
@@ -821,11 +980,155 @@
             embed: "https://vk.com/video_ext.php?oid=-235971927&id=456239047&hash=c0e153bb58a8f509",
             type: "vk",
             duration: "02:58",
-            downloadUrl: "https://drive.google.com/uc?export=download&id="
-        }            
+            downloadUrl: "https://drive.google.com/uc?export=download&id=1iLFMkp81-29DslCCg-he9dEDJ8QdMnHF"
+        }
     ];
 
     let currentFilter = "all";
+    // ========== ПЕРЕМЕННЫЕ ДЛЯ ПОИСКА ПО ВИДЕО ==========
+    let videosSearchQuery = "";
+    let filteredVideoFiles = [];
+
+    // ========== ФУНКЦИЯ ДЛЯ ПОИСКА ПО ВИДЕО ==========
+    function filterVideos(query) {
+        videosSearchQuery = query.toLowerCase().trim();
+        
+        if (videosSearchQuery === "") {
+            filteredVideoFiles = [...videoFiles];
+        } else {
+            filteredVideoFiles = videoFiles.filter(video => 
+                video.title.toLowerCase().includes(videosSearchQuery)
+            );
+        }
+        
+        renderFilteredVideos();
+        updateVideosSearchCount();
+    }
+
+    // ========== ОБНОВЛЕНИЕ СЧЁТЧИКА РЕЗУЛЬТАТОВ ==========
+    function updateVideosSearchCount() {
+        const countEl = document.getElementById('videosSearchCount');
+        if (!countEl) return;
+        const total = videoFiles.length;
+        const found = filteredVideoFiles.length;
+        if (videosSearchQuery === "") {
+            countEl.textContent = `📹 ${total} видео`;
+        } else {
+            countEl.textContent = `📹 Найдено: ${found} из ${total}`;
+        }
+    }
+
+    // ========== ОТОБРАЖЕНИЕ ОТФИЛЬТРОВАННЫХ ВИДЕО ==========
+    function renderFilteredVideos() {
+        const grid = document.getElementById("videosGrid");
+        if (!grid) return;
+        
+        if (filteredVideoFiles.length === 0 && videosSearchQuery !== "") {
+            grid.innerHTML = `<div class="no-videos-found">🔍 НИЧЕГО НЕ НАЙДЕНО ПО ЗАПРОСУ "${videosSearchQuery}"</div>`;
+            return;
+        }
+        
+        grid.innerHTML = "";
+        filteredVideoFiles.forEach((video, idx) => {
+            const item = document.createElement("div");
+            item.className = "video-card";
+            
+            let videoType = video.type || detectVideoType(video.url);
+            let videoHtml = '';
+            if (videoType === 'google') {
+                videoHtml = `<video id="video_${idx}" preload="metadata">
+                    <source src="${video.url}" type="video/mp4">
+                </video>`;
+            } else {
+                videoHtml = `<div class="video-iframe-wrapper">
+                    <iframe src="${video.embed}" frameborder="0" allowfullscreen></iframe>
+                </div>`;
+            }
+            
+            const hasDownload = video.downloadUrl || videoType === 'google';
+            
+            // ПОДСВЕЧИВАЕМ СОВПАДЕНИЯ В НАЗВАНИИ
+            let displayTitle = video.title;
+            if (videosSearchQuery !== "") {
+                const regex = new RegExp(`(${videosSearchQuery})`, 'gi');
+                displayTitle = video.title.replace(regex, '<mark style="background:#ff2a7a; color:#000; padding:0 4px; border-radius:2px;">$1</mark>');
+            }
+            
+            item.innerHTML = `
+                ${videoHtml}
+                <div class="video-title">${displayTitle}</div>
+                <div class="video-duration">⏱ ${escapeHtml(video.duration || '—')}</div>
+                <div class="video-buttons">
+                    <button class="play-btn" data-idx="${idx}">▶ СМОТРЕТЬ</button>
+                    ${hasDownload ? `<button class="download-btn" data-url="${video.downloadUrl || video.url}" data-name="${video.title}.mp4">⬇ СКАЧАТЬ</button>` : ''}
+                </div>
+            `;
+            grid.appendChild(item);
+        });
+        
+        // ПРИВЯЗЫВАЕМ ОБРАБОТЧИКИ К КНОПКАМ
+        document.querySelectorAll('.video-card .play-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = parseInt(btn.dataset.idx);
+                // НАХОДИМ ОРИГИНАЛЬНОЕ ВИДЕО ПО ID
+                const originalVideo = filteredVideoFiles[idx];
+                if (originalVideo) {
+                    // НАХОДИМ ПОЛНЫЙ ОБЪЕКТ В ОРИГИНАЛЬНОМ МАССИВЕ
+                    const fullVideo = videoFiles.find(v => v.id === originalVideo.id);
+                    if (fullVideo) openVideoModal(fullVideo);
+                }
+            });
+        });
+        
+        document.querySelectorAll('.video-card .download-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const url = btn.dataset.url;
+                const name = btn.dataset.name;
+                try {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error();
+                    const blob = await res.blob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = name;
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                } catch { alert(`Не удалось скачать видео`); }
+            });
+        });
+    }
+
+    // ========== ИНИЦИАЛИЗАЦИЯ ПОИСКА ПО ВИДЕО ==========
+    function initVideosSearch() {
+        const searchInput = document.getElementById('videosSearchInput');
+        const clearBtn = document.getElementById('videosSearchClear');
+        if (!searchInput) return;
+        
+        // ПРИ ВВОДЕ ТЕКСТА
+        searchInput.addEventListener('input', function() {
+            filterVideos(this.value);
+        });
+        
+        // КНОПКА ОЧИСТИТЬ
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                filterVideos('');
+                searchInput.focus();
+            });
+        }
+        
+        // ПРИ НАЖАТИИ ESC — ОЧИЩАЕМ ПОИСК
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                filterVideos('');
+                this.blur();
+            }
+        });
+    }    
     let searchQuery = "";
     let newsArray = [];
 
@@ -910,6 +1213,17 @@
         document.getElementById('videosContainer').classList.remove('active');
         document.getElementById('galleryContainer').classList.remove('active');
         document.getElementById('videoContainer').style.display = 'block';
+        
+        // === ПРИНУДИТЕЛЬНЫЙ ПЕРЕЗАПУСК ФОНОВОГО ВИДЕО ===
+        const video = document.getElementById('backgroundVideo');
+        if (video) {
+            video.currentTime = 0;
+            video.play().catch(function() {
+                setTimeout(() => {
+                    video.play().catch(() => {});
+                }, 500);
+            });
+        }
     }
 
     function showMusic() {
@@ -919,7 +1233,8 @@
         document.getElementById('galleryContainer').classList.remove('active');
         document.getElementById('videoContainer').style.display = 'none';
     }
-        // ========== ОСТАНОВКА ВСЕЙ МУЗЫКИ ==========
+
+    // ========== ОСТАНОВКА ВСЕЙ МУЗЫКИ ==========
     function stopAllMusic() {
         // ОСТАНАВЛИВАЕМ ГЛАВНЫЙ ПЛЕЕР (внизу страницы)
         const audioPlayer = document.getElementById("audioPlayer");
@@ -954,16 +1269,26 @@
     
     function showVideos() {
         stopAllMusic();
-
+        
         document.getElementById('homeSection').classList.add('hide');
         document.getElementById('musicSection').classList.remove('active');
         document.getElementById('videosContainer').classList.add('active');
         document.getElementById('galleryContainer').classList.remove('active');
         document.getElementById('videoContainer').style.display = 'none';
-        renderVideos();
+        
+        // СБРАСЫВАЕМ ПОИСК ПРИ ОТКРЫТИИ
+        const searchInput = document.getElementById('videosSearchInput');
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        videosSearchQuery = "";
+        filteredVideoFiles = [...videoFiles];
+        renderFilteredVideos();
+        updateVideosSearchCount();
     }
 
     function showPictures() {
+        stopAllMusic();
         document.getElementById('homeSection').classList.add('hide');
         document.getElementById('musicSection').classList.remove('active');
         document.getElementById('videosContainer').classList.remove('active');
@@ -981,7 +1306,7 @@
         if (url.includes('youtube.com') || url.includes('youtu.be')) {
             return 'youtube';
         }
-        if (url.includes('vk.com') || url.includes('vkontakte.ru')) {
+        if (url.includes('vk.com') || url.includes('vkontakte.ru') || url.includes('vkvideo.ru')) {
             return 'vk';
         }
         if (url.includes('rutube.ru')) {
@@ -990,7 +1315,7 @@
         if (url.includes('vimeo.com')) {
             return 'vimeo';
         }
-        if (url.includes('ok.ru') || url.includes('odnoklassniki.ru')) {  // ← ДОБАВЬ ЭТУ СТРОКУ
+        if (url.includes('ok.ru') || url.includes('odnoklassniki.ru')) {
             return 'ok';
         }
         return 'unknown';
@@ -1384,10 +1709,14 @@
         });
     }
 
-    // ========== ГАЛЕРЕЯ ==========
+    // ========== ГАЛЕРЕЯ С ПОДДЕРЖКОЙ КОЛОНОК ==========
     function renderGallery() {
         const grid = document.getElementById("galleryGrid");
         if (!grid) return;
+        
+        // ПРИМЕНЯЕМ КОЛИЧЕСТВО КОЛОНОК
+        grid.style.gridTemplateColumns = `repeat(${galleryColumns}, 1fr)`;
+        
         grid.innerHTML = "";
         pictureFiles.forEach((src, idx) => {
             const item = document.createElement("div");
@@ -1403,6 +1732,7 @@
             `;
             grid.appendChild(item);
         });
+        
         document.querySelectorAll('.gallery-item .download-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -1420,6 +1750,7 @@
                 } catch { alert(`Не удалось скачать: ${url}`); }
             });
         });
+        
         document.querySelectorAll('.gallery-item .expand-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1442,6 +1773,27 @@
         overlay.appendChild(img);
         overlay.appendChild(closeBtn);
         document.body.appendChild(overlay);
+    }
+
+    // ========== УПРАВЛЕНИЕ КОЛИЧЕСТВОМ КОЛОНОК В ГАЛЕРЕЕ ==========
+    function initGalleryControls() {
+        const buttons = document.querySelectorAll('#galleryGridButtons button');
+        if (!buttons.length) return;
+        
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // УБИРАЕМ АКТИВНЫЙ КЛАСС У ВСЕХ КНОПОК
+                buttons.forEach(b => b.classList.remove('active'));
+                // ДОБАВЛЯЕМ АКТИВНЫЙ КЛАСС НАЖАТОЙ КНОПКЕ
+                this.classList.add('active');
+                
+                // ПОЛУЧАЕМ НОВОЕ КОЛИЧЕСТВО КОЛОНОК
+                galleryColumns = parseInt(this.dataset.cols);
+                
+                // ПЕРЕРИСОВЫВАЕМ ГАЛЕРЕЮ
+                renderGallery();
+            });
+        });
     }
 
     // ========== МУЗЫКА ==========
@@ -1647,10 +1999,44 @@
     document.getElementById("closeNewsSidebarBtn")?.addEventListener("click", closeNewsSidebar);
     document.getElementById("overlay")?.addEventListener("click", () => { closeLyricsSidebar(); closeNewsSidebar(); });
 
+    // ========== ПРИНУДИТЕЛЬНОЕ ВОСПРОИЗВЕДЕНИЕ ФОНОВОГО ВИДЕО ==========
+    function ensureVideoPlays() {
+        const video = document.getElementById('backgroundVideo');
+        if (!video) return;
+        
+        // ПРОБУЕМ ЗАПУСТИТЬ
+        video.play().catch(function(error) {
+            console.log('Автовоспроизведение заблокировано, пробуем снова...');
+            setTimeout(() => {
+                video.play().catch(() => {});
+            }, 1000);
+        });
+        
+        // ЕСЛИ ВИДЕО ОСТАНОВИЛОСЬ - ПЕРЕЗАПУСКАЕМ
+        video.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play().catch(() => {});
+        });
+        
+        // ПРИ ПОЛУЧЕНИИ ФОКУСА - ПЕРЕЗАПУСКАЕМ
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                video.play().catch(() => {});
+            }
+        });
+        
+        // ДОБАВЛЯЕМ ПОВТОРНУЮ ПОПЫТКУ ЧЕРЕЗ 2 СЕКУНДЫ
+        setTimeout(() => {
+            video.play().catch(() => {});
+        }, 2000);
+    }   
     // ЗАПУСК
     initSlider();
     initMobileSlider();
     initMobileMenu();
+    initGalleryControls();
+    initVideosSearch();      // ← ДОБАВЬ ЭТУ СТРОКУ
+    ensureVideoPlays();
     showHome();
     renderSongs();
     loadNewsForSidebar();
