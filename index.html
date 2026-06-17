@@ -132,6 +132,67 @@
         .gallery-item .expand-btn:hover { background: #ff2a7a; color: #000; border-color: #ff2a7a; }
         .gallery-item .download-btn:hover { background: #fff; color: #000; border-color: #fff; }
 
+        /* ВИДЕО-СЕКЦИЯ */
+        .videos-container {
+            display: none;
+            padding: 0 2rem 2rem 2rem;
+            background: #000000;
+            position: relative;
+            z-index: 2;
+        }
+        .videos-container.active { display: block; }
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .video-card {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 1rem;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .video-card:hover { border-color: #555; }
+        .video-card video {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            background: #000;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .video-card .video-title {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0.8rem 0 0.5rem;
+            color: #fff;
+        }
+        .video-card .video-duration {
+            font-size: 0.65rem;
+            color: #666;
+            margin-bottom: 0.8rem;
+        }
+        .video-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+        .video-card .play-btn, .video-card .download-btn {
+            flex: 1;
+            background: transparent;
+            border: 1px solid #333;
+            padding: 6px 12px;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.1s;
+        }
+        .video-card .play-btn:hover { background: #ff2a7a; color: #000; border-color: #ff2a7a; }
+        .video-card .download-btn:hover { background: #fff; color: #000; border-color: #fff; }
+
         /* ПАНЕЛИ */
         .news-sidebar {
             position: fixed;
@@ -561,6 +622,9 @@
             .mobile-slider-container { display: block; }
             .gallery-container { padding: 0 1rem 1rem 1rem; }
             .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+            .videos-container { padding: 0 1rem 1rem 1rem; }
+            .videos-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+            .video-card video { max-height: 150px; }
             .home-section .welcome-text h1 { font-size: 2rem; }
         }
         @media (max-width: 1000px) and (min-width: 769px) {
@@ -615,6 +679,7 @@
     <button class="close-mobile-nav" id="closeMobileNav">✕</button>
     <a href="#" id="mobileHomeLink">Home</a>
     <a href="#" id="mobileMusicLink">Music</a>
+    <a href="#" id="mobileVideosLink">Videos</a>
     <a href="#" id="mobilePicturesLink">Pictures</a>
     <a href="#" id="mobileGagaNewsLink" class="gaganews-link"><span class="gaga-part">GAGA</span><span class="news-part">news</span></a>
     <a href="#" id="mobileShopLink">Shop</a>
@@ -633,6 +698,7 @@
         <div class="nav-links">
             <a href="#" id="homeLink">Home</a>
             <a href="#" id="musicLink">Music</a>
+            <a href="#" id="videosLink">Videos</a>
             <a href="#" id="picturesLink">Pictures</a>
             <a href="#" id="gagaNewsLink" class="gaganews-link"><span class="gaga-part">GAGA</span><span class="news-part">news</span></a>
             <a href="#" id="shopLink">Shop</a>
@@ -673,7 +739,12 @@
         <div class="gallery-grid" id="galleryGrid"></div>
     </div>
 
-    <footer>LADY GAGA · FAN ARCHIVE · VIDEO FROM APPLE MUSIC ·  MAYHEM REQUIEM</footer>
+    <!-- ВИДЕО-СЕКЦИЯ -->
+    <div class="videos-container" id="videosContainer">
+        <div class="videos-grid" id="videosGrid"></div>
+    </div>
+
+    <footer>LADY GAGA · FAN ARCHIVE · VIDEO FROM APPLE MUSIC · MAYHEM REQUIEM</footer>
 </div>
 
 <script>
@@ -691,17 +762,39 @@
         "images/slide28.jpg", "images/slide29.jpg", "images/slide30.jpg"
     ];
 
-    // СПИСОК ФАЙЛОВ ДЛЯ ГАЛЕРЕИ
+    // СПИСОК ФАЙЛОВ ДЛЯ ГАЛЕРЕИ (ТОЛЬКО ФОТО!)
     const pictureFiles = [
-        "pictures/1.jpg",
+        "images/slide1.jpg", "images/slide2.jpg", "images/slide3.jpg",
+        "images/slide4.jpg", "images/slide5.jpg", "images/slide6.jpg",
+        "images/slide7.jpg", "images/slide8.jpg", "images/slide9.jpg",
+        "images/slide10.jpg", "images/slide11.jpg", "images/slide12.jpg",
+        "images/slide13.jpg", "images/slide14.jpg", "images/slide15.jpg",
+        "images/slide16.jpg", "images/slide17.jpg", "images/slide18.jpg",
+        "images/slide19.jpg", "images/slide20.jpg", "images/slide21.jpg",
+        "images/slide22.jpg", "images/slide23.jpg", "images/slide24.jpg",
+        "images/slide25.jpg", "images/slide26.jpg", "images/slide27.jpg",
+        "images/slide28.jpg", "images/slide29.jpg", "images/slide30.jpg"
+    ];
+
+    // ========== СПИСОК ВИДЕО ==========
+    const videoFiles = [
+        {
+            id: 1,
+            title: "Mayhem Requiem 2026 Lady Gaga",
+            url: "https://vk.com/video_ext.php?oid=-136641579&id=456242923&hash=c52e4b4ca9b0ad60",
+            embed: "https://vk.com/video_ext.php?oid=-136641579&id=456242923&hash=c52e4b4ca9b0ad60",
+            type: "vk",
+            duration: "01:07:10",
+            downloadUrl: "https://drive.google.com/uc?export=download&id=1iLFMkp81-29DslCCg-he9dEDJ8QdMnHF"
+        }
     ];
 
     let currentFilter = "all";
     let searchQuery = "";
     let newsArray = [];
 
-     // ═══════════════════════════════════════════════════════════════
-    // ПОЛНАЯ БИБЛИОТЕКА ПЕСЕН (23 ТРЕКА)
+    // ═══════════════════════════════════════════════════════════════
+    // БИБЛИОТЕКА ПЕСЕН (ВСТАВЬ СВОЮ ПОЛНУЮ ВЕРСИЮ)
     // ═══════════════════════════════════════════════════════════════
      const songsDatabase = [
         // ═══════════════ THE FAME ═══════════════
@@ -769,7 +862,7 @@
         { id: 29, title: "Rain On Me", album: "Chromatica", year: 2020, artist: "Lady Gaga & Ariana Grande", fileName: "Lady_Gaga_Ariana_Grande_-_Rain_On_Me_69656156.mp3", folder: "Chromatica", lyrics: `[Verse 1: Lady Gaga]\nI didn't ask for a free ride\nI only asked you to show me a real good time\nI never asked for the rainfall\nAt least I showed up, you showed me nothin' at all\n\n[Pre-Chorus: Lady Gaga]\nIt's comin' down on me\nWater like misery\nIt's comin' down on me\nI'm ready, rain on me\n\n[Chorus: Lady Gaga]\nI'd rather be dry, but at least I'm alive\nRain on me, rain, rain\nRain on me, rain, rain\nI'd rather be dry, but at least I'm alive\nRain on me, rain, rain\nRain on me\n\n[Verse 2: Ariana Grande]\nLivin' in a world where no one's innocent\nOh, but at least we try, mm\nGotta live my truth, not keep it bottled in\nSo I don't lose my mind, baby, yeah\n\n[Bridge: Both]\nHands up to the sky\nI'll be your galaxy\nI'm about to fly\nRain on me, tsunami\nHands up to the sky\nI'll be your galaxy\nI'm about to fly\nRain on me\n\n[Outro]\nI hear the thunder comin' down\nWon't you rain on me? Eh, eh, yeah\nRain on, woo\nI hear the thunder comin' down\nWon't you rain on me? Eh, eh, yeah\nRain on me` }
         
     ];
-         
+
     function getSongUrl(song) {
         return `songs/${encodeURIComponent(song.folder)}/${encodeURIComponent(song.fileName)}`;
     }
@@ -778,6 +871,7 @@
     function showHome() {
         document.getElementById('homeSection').classList.remove('hide');
         document.getElementById('musicSection').classList.remove('active');
+        document.getElementById('videosContainer').classList.remove('active');
         document.getElementById('galleryContainer').classList.remove('active');
         document.getElementById('videoContainer').style.display = 'block';
     }
@@ -785,94 +879,435 @@
     function showMusic() {
         document.getElementById('homeSection').classList.add('hide');
         document.getElementById('musicSection').classList.add('active');
+        document.getElementById('videosContainer').classList.remove('active');
         document.getElementById('galleryContainer').classList.remove('active');
         document.getElementById('videoContainer').style.display = 'none';
+    }
+
+    function showVideos() {
+        document.getElementById('homeSection').classList.add('hide');
+        document.getElementById('musicSection').classList.remove('active');
+        document.getElementById('videosContainer').classList.add('active');
+        document.getElementById('galleryContainer').classList.remove('active');
+        document.getElementById('videoContainer').style.display = 'none';
+        renderVideos();
     }
 
     function showPictures() {
         document.getElementById('homeSection').classList.add('hide');
         document.getElementById('musicSection').classList.remove('active');
+        document.getElementById('videosContainer').classList.remove('active');
         document.getElementById('galleryContainer').classList.add('active');
         document.getElementById('videoContainer').style.display = 'none';
         renderGallery();
     }
 
-        // ========== НОВОСТИ (загрузка из JSONBin.io) ==========
+    // ========== ОПРЕДЕЛЕНИЕ ТИПА ВИДЕО ==========
+    function detectVideoType(url) {
+        if (!url) return 'unknown';
+        if (url.includes('drive.google.com') || url.includes('google.com')) {
+            return 'google';
+        }
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            return 'youtube';
+        }
+        if (url.includes('vk.com') || url.includes('vkontakte.ru')) {
+            return 'vk';
+        }
+        if (url.includes('rutube.ru')) {
+            return 'rutube';
+        }
+        if (url.includes('vimeo.com')) {
+            return 'vimeo';
+        }
+        return 'unknown';
+    }
+
+    // ========== ВИДЕО ==========
+    function renderVideos() {
+        const grid = document.getElementById("videosGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+        videoFiles.forEach((video, idx) => {
+            const item = document.createElement("div");
+            item.className = "video-card";
+            
+            let videoType = video.type || detectVideoType(video.url);
+            let videoHtml = '';
+            if (videoType === 'google') {
+                videoHtml = `<video id="video_${idx}" preload="metadata">
+                    <source src="${video.url}" type="video/mp4">
+                </video>`;
+            } else {
+                videoHtml = `<div class="video-iframe-wrapper">
+                    <iframe src="${video.embed}" frameborder="0" allowfullscreen></iframe>
+                </div>`;
+            }
+            
+            // ВНУТРИ renderVideos(), в цикле videoFiles.forEach
+            const hasDownload = video.downloadUrl || videoType === 'google';
+            
+            item.innerHTML = `
+                ${videoHtml}
+                <div class="video-title">${escapeHtml(video.title)}</div>
+                <div class="video-duration">⏱ ${escapeHtml(video.duration || '—')}</div>
+                <div class="video-buttons">
+                    <button class="play-btn" data-idx="${idx}">▶ СМОТРЕТЬ</button>
+                    ${hasDownload ? `<button class="download-btn" data-url="${video.downloadUrl || video.url}" data-name="${video.title}.mp4">⬇ СКАЧАТЬ</button>` : ''}
+                </div>
+            `;
+            grid.appendChild(item);
+        });
+        
+        document.querySelectorAll('.video-card .play-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = parseInt(btn.dataset.idx);
+                openVideoModal(videoFiles[idx]);
+            });
+        });
+        
+        document.querySelectorAll('.video-card .download-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const url = btn.dataset.url;
+                const name = btn.dataset.name;
+                try {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error();
+                    const blob = await res.blob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = name;
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                } catch { alert(`Не удалось скачать видео`); }
+            });
+        });
+    }
+
+    // ========== ОТКРЫТИЕ ВИДЕО С ПРОГРЕССОМ ==========
+    function openVideoModal(video) {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: pointer;
+        `;
+        
+        const container = document.createElement('div');
+        container.style.cssText = `
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        `;
+        
+        let videoType = video.type || detectVideoType(video.url);
+        const videoWrapper = document.createElement('div');
+        videoWrapper.style.cssText = `
+            width: 100%;
+            position: relative;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        `;
+        
+        let videoEl;
+        let isGoogle = false;
+        let isIframe = false;
+        
+        if (videoType === 'google') {
+            isGoogle = true;
+            videoEl = document.createElement('video');
+            videoEl.controls = true;
+            videoEl.style.cssText = `
+                width: 100%;
+                max-height: 80vh;
+                background: #000;
+                display: block;
+            `;
+        } else {
+            isIframe = true;
+            videoEl = document.createElement('iframe');
+            videoEl.src = video.embed;
+            videoEl.allowFullscreen = true;
+            videoEl.frameBorder = '0';
+            videoEl.style.cssText = `
+                width: 100%;
+                height: 500px;
+                max-height: 80vh;
+                background: #000;
+                display: block;
+            `;
+        }
+        
+        videoWrapper.appendChild(videoEl);
+        
+        let progressContainer, progressBar, loadInfo, speedInfo;
+        
+        if (isGoogle) {
+            progressContainer = document.createElement('div');
+            progressContainer.style.cssText = `
+                width: 100%;
+                height: 4px;
+                background: rgba(255,255,255,0.1);
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                z-index: 10;
+            `;
+            
+            progressBar = document.createElement('div');
+            progressBar.style.cssText = `
+                width: 0%;
+                height: 100%;
+                background: linear-gradient(90deg, #ff2a7a, #ff6b9d);
+                transition: width 0.3s ease;
+                border-radius: 0 2px 2px 0;
+            `;
+            
+            loadInfo = document.createElement('div');
+            loadInfo.style.cssText = `
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
+                color: rgba(255,255,255,0.7);
+                font-size: 0.7rem;
+                font-family: monospace;
+                z-index: 11;
+                background: rgba(0,0,0,0.5);
+                padding: 4px 10px;
+                border-radius: 4px;
+            `;
+            loadInfo.textContent = '📥 Загрузка... 0%';
+            
+            speedInfo = document.createElement('div');
+            speedInfo.style.cssText = `
+                position: absolute;
+                bottom: 10px;
+                left: 10px;
+                color: rgba(255,255,255,0.5);
+                font-size: 0.6rem;
+                font-family: monospace;
+                z-index: 11;
+                background: rgba(0,0,0,0.3);
+                padding: 2px 8px;
+                border-radius: 4px;
+            `;
+            speedInfo.textContent = '⏱ Подготовка...';
+            
+            progressContainer.appendChild(progressBar);
+            videoWrapper.appendChild(progressContainer);
+            videoWrapper.appendChild(loadInfo);
+            videoWrapper.appendChild(speedInfo);
+            
+            // ЗАГРУЗКА ЧЕРЕЗ FETCH С ПРОГРЕССОМ
+            (async () => {
+                try {
+                    const response = await fetch(video.url);
+                    if (!response.ok) throw new Error('Ошибка загрузки');
+                    
+                    const contentLength = response.headers.get('content-length');
+                    const total = parseInt(contentLength, 10);
+                    const reader = response.body.getReader();
+                    const chunks = [];
+                    let loaded = 0;
+                    const startTime = Date.now();
+                    
+                    loadInfo.textContent = '📥 0% (0 / ' + (total ? (total / 1024 / 1024).toFixed(0) + ' MB' : '...') + ')';
+                    
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        
+                        chunks.push(value);
+                        loaded += value.length;
+                        
+                        if (total) {
+                            const percent = Math.min((loaded / total) * 100, 100);
+                            progressBar.style.width = percent + '%';
+                            
+                            const elapsed = (Date.now() - startTime) / 1000;
+                            const speed = loaded / elapsed;
+                            const remaining = (total - loaded) / speed;
+                            
+                            const loadedMB = (loaded / 1024 / 1024).toFixed(0);
+                            const totalMB = (total / 1024 / 1024).toFixed(0);
+                            loadInfo.textContent = `📥 ${percent.toFixed(0)}% (${loadedMB} / ${totalMB} MB)`;
+                            
+                            if (remaining > 0 && remaining < 3600) {
+                                const min = Math.floor(remaining / 60);
+                                const sec = Math.floor(remaining % 60);
+                                speedInfo.textContent = `⏱ ${min}м ${sec}с · ${(speed / 1024 / 1024).toFixed(1)} MB/s`;
+                            }
+                        } else {
+                            const loadedMB = (loaded / 1024 / 1024).toFixed(0);
+                            loadInfo.textContent = `📥 ${loadedMB} MB загружено`;
+                        }
+                    }
+                    
+                    const blob = new Blob(chunks, { type: 'video/mp4' });
+                    const url = URL.createObjectURL(blob);
+                    videoEl.src = url;
+                    
+                    progressBar.style.width = '100%';
+                    loadInfo.textContent = '✅ Загрузка завершена!';
+                    setTimeout(() => {
+                        if (loadInfo) loadInfo.style.display = 'none';
+                        if (speedInfo) speedInfo.style.display = 'none';
+                    }, 2000);
+                    
+                    await videoEl.play();
+                } catch (error) {
+                    console.error('Ошибка загрузки:', error);
+                    if (loadInfo) {
+                        loadInfo.textContent = '⚠️ Ошибка загрузки. Пробуем встроенный плеер...';
+                        loadInfo.style.color = '#ff6b6b';
+                    }
+                    try {
+                        videoEl.innerHTML = `<iframe src="${video.embed}" width="100%" height="500" frameborder="0" allowfullscreen></iframe>`;
+                        if (loadInfo) {
+                            loadInfo.textContent = '🔄 Видео через встроенный плеер';
+                            setTimeout(() => { loadInfo.style.display = 'none'; }, 3000);
+                        }
+                    } catch (e) {
+                        if (loadInfo) loadInfo.textContent = '❌ Не удалось загрузить видео';
+                    }
+                }
+            })();
+        }
+        
+        const titleEl = document.createElement('div');
+        titleEl.textContent = video.title;
+        titleEl.style.cssText = `
+            color: #fff;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            text-align: center;
+            letter-spacing: 1px;
+        `;
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '✕';
+        closeBtn.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #fff;
+            color: #fff;
+            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        `;
+        closeBtn.onmouseenter = () => {
+            closeBtn.style.background = '#fff';
+            closeBtn.style.color = '#000';
+        };
+        closeBtn.onmouseleave = () => {
+            closeBtn.style.background = 'rgba(0,0,0,0.7)';
+            closeBtn.style.color = '#fff';
+        };
+        
+        closeBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (videoEl && videoEl.pause) videoEl.pause();
+            document.body.removeChild(overlay);
+        };
+        overlay.onclick = (e) => {
+            if (e.target === overlay) {
+                if (videoEl && videoEl.pause) videoEl.pause();
+                document.body.removeChild(overlay);
+            }
+        };
+        
+        const onEsc = (e) => {
+            if (e.key === 'Escape') {
+                if (document.body.contains(overlay)) {
+                    if (videoEl && videoEl.pause) videoEl.pause();
+                    document.body.removeChild(overlay);
+                }
+                document.removeEventListener('keydown', onEsc);
+            }
+        };
+        document.addEventListener('keydown', onEsc);
+        
+        container.appendChild(videoWrapper);
+        container.appendChild(titleEl);
+        overlay.appendChild(container);
+        overlay.appendChild(closeBtn);
+        document.body.appendChild(overlay);
+    }
+
+    // ========== НОВОСТИ ==========
     const JSONBIN_BIN_ID = "6a18065dddf5aa59f76f33fd";
     const JSONBIN_API_KEY = "$2a$10$Q.oT76K01L8Ec3NOZTDgM.E0tki.OTODFHOpSA97fHFExeMVZ5xD.";
 
     async function loadNewsForSidebar() {
         const container = document.getElementById("newsSidebarContent");
-        if (container) {
-            container.innerHTML = '<div class="empty-news">📭 ЗАГРУЗКА НОВОСТЕЙ...</div>';
-        }
-        
+        if (container) container.innerHTML = '<div class="empty-news">📭 ЗАГРУЗКА НОВОСТЕЙ...</div>';
         try {
-            // ПРЯМОЙ ЗАПРОС К JSONBIN
             const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                method: 'GET',
-                headers: {
-                    'X-Master-Key': JSONBIN_API_KEY,
-                    'Content-Type': 'application/json'
-                }
+                headers: { "X-Master-Key": JSONBIN_API_KEY }
             });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
-            console.log("Данные из JSONBin:", data); // ПРОВЕРКА В КОНСОЛИ
-            
-            // ПРОВЕРЯЕМ СТРУКТУРУ: новости могут быть в data.record.news
-            if (data.record && data.record.news) {
-                newsArray = data.record.news;
-            } else if (data.news) {
-                newsArray = data.news;
-            } else if (Array.isArray(data.record)) {
-                newsArray = data.record;
-            } else {
-                newsArray = [];
-            }
-            
+            newsArray = data.record?.news || [];
             renderNewsSidebar();
         } catch (error) {
-            console.error("Ошибка загрузки:", error);
-            if (container) {
-                container.innerHTML = `<div class="empty-news">⚠️ ОШИБКА ЗАГРУЗКИ: ${error.message}</div>`;
-            }
+            if (container) container.innerHTML = `<div class="empty-news">⚠️ ОШИБКА: ${error.message}</div>`;
         }
     }
 
     function renderNewsSidebar() {
         const container = document.getElementById("newsSidebarContent");
         if (!container) return;
-        
         if (!newsArray || newsArray.length === 0) {
             container.innerHTML = '<div class="empty-news">📭 НОВОСТЕЙ ПОКА НЕТ</div>';
             return;
         }
-        
         const sorted = [...newsArray].reverse();
         container.innerHTML = sorted.map(news => `
             <div class="news-item">
                 <div class="news-date">📅 ${escapeHtml(news.date || '—')}</div>
                 <div class="news-title">${escapeHtml(news.title)}</div>
                 <div class="news-content">${escapeHtml(news.content || '').replace(/\n/g, '<br>')}</div>
-                <div class="news-images">
-                    ${(news.images || []).map(img => `<img src="${escapeHtml(img)}" onerror="this.style.display='none'">`).join('')}
-                </div>
+                <div class="news-images">${(news.images || []).map(img => `<img src="${escapeHtml(img)}" onerror="this.style.display='none'">`).join('')}</div>
             </div>
         `).join("");
     }
 
     function escapeHtml(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+
+    function watchNewsUpdates() {
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'gaga_news' || e.key === 'gaga_news_update') {
+                loadNewsForSidebar();
+            }
         });
     }
 
@@ -895,7 +1330,6 @@
             `;
             grid.appendChild(item);
         });
-        
         document.querySelectorAll('.gallery-item .download-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -913,7 +1347,6 @@
                 } catch { alert(`Не удалось скачать: ${url}`); }
             });
         });
-        
         document.querySelectorAll('.gallery-item .expand-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1110,6 +1543,7 @@
         
         document.getElementById("mobileHomeLink")?.addEventListener("click", (e) => { e.preventDefault(); showHome(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         document.getElementById("mobileMusicLink")?.addEventListener("click", (e) => { e.preventDefault(); showMusic(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
+        document.getElementById("mobileVideosLink")?.addEventListener("click", (e) => { e.preventDefault(); showVideos(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         document.getElementById("mobilePicturesLink")?.addEventListener("click", (e) => { e.preventDefault(); showPictures(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         document.getElementById("mobileGagaNewsLink")?.addEventListener("click", (e) => { e.preventDefault(); openNewsSidebar(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         document.getElementById("mobileShopLink")?.addEventListener("click", (e) => { e.preventDefault(); window.open("https://www.ladygaga.com/us-en/shop/collections/all", "_blank"); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
@@ -1120,6 +1554,7 @@
     // ОБРАБОТЧИКИ ПК КНОПОК
     document.getElementById("homeLink")?.addEventListener("click", (e) => { e.preventDefault(); showHome(); });
     document.getElementById("musicLink")?.addEventListener("click", (e) => { e.preventDefault(); showMusic(); });
+    document.getElementById("videosLink")?.addEventListener("click", (e) => { e.preventDefault(); showVideos(); });
     document.getElementById("picturesLink")?.addEventListener("click", (e) => { e.preventDefault(); showPictures(); });
     document.getElementById("gagaNewsLink")?.addEventListener("click", (e) => { e.preventDefault(); openNewsSidebar(); });
     document.getElementById("shopLink")?.addEventListener("click", (e) => { e.preventDefault(); window.open("https://www.ladygaga.com/us-en/shop/collections/all", "_blank"); });
