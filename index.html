@@ -48,10 +48,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            pointer-events: none;  /* ОТКЛЮЧАЕТ ВЗАИМОДЕЙСТВИЕ С МЫШЬЮ */
+            pointer-events: none;
         }
 
-        /* СКРЫВАЕМ ЭЛЕМЕНТЫ УПРАВЛЕНИЯ В ПЛЕЕРЕ */
         .video-container video::-webkit-media-controls {
             display: none !important;
         }
@@ -100,11 +99,9 @@
         .home-section p { font-size: 1rem; letter-spacing: 2px; color: #ccc; }
         .home-section.hide { display: none; }
 
-        /* МУЗЫКАЛЬНЫЙ РАЗДЕЛ */
         .music-section { display: none; background: #000000; position: relative; z-index: 2; }
         .music-section.active { display: block; }
 
-        /* ГАЛЕРЕЯ */
         .gallery-container { display: none; padding: 0 2rem 2rem 2rem; background: #000000; position: relative; z-index: 2; }
         .gallery-container.active { display: block; }
         .gallery-grid {
@@ -154,7 +151,6 @@
         .gallery-item .expand-btn:hover { background: #ff2a7a; color: #000; border-color: #ff2a7a; }
         .gallery-item .download-btn:hover { background: #fff; color: #000; border-color: #fff; }
 
-        /* ВИДЕО-СЕКЦИЯ */
         .videos-container {
             display: none;
             padding: 0 2rem 2rem 2rem;
@@ -215,7 +211,6 @@
         .video-card .play-btn:hover { background: #ff2a7a; color: #000; border-color: #ff2a7a; }
         .video-card .download-btn:hover { background: #fff; color: #000; border-color: #fff; }
 
-        /* ПАНЕЛИ */
         .news-sidebar {
             position: fixed;
             right: -650px;
@@ -312,7 +307,6 @@
         }
         .overlay.active { display: block; }
 
-        /* ШАПКА И МЕНЮ */
         .site-header {
             display: flex;
             justify-content: space-between;
@@ -409,6 +403,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             align-items: center;
+            padding-right: 60px;
         }
         .nav-links a {
             color: #aaa;
@@ -418,7 +413,85 @@
         }
         .nav-links a:hover { color: #ffffff; }
 
-        /* СЛАЙДЕРЫ */
+/* ===== СТИЛИ ДЛЯ ВЫПАДАЮЩИХ КНОПОК (БЕЗ ОБВОДОК, С HOVER) ===== */
+.dropdown-parent {
+    position: relative;
+    cursor: pointer;
+    padding: 8px 12px;
+    background: transparent; /* убрал фон */
+    backdrop-filter: blur(8px);
+    border: none; /* убрал обводку */
+    color: #aaa;
+    transition: all 0.25s ease;
+    user-select: none;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.dropdown-parent:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+.dropdown-parent .arrow {
+    display: inline-block;
+    margin-left: 6px;
+    transition: transform 0.3s ease;
+    font-size: 0.6rem;
+}
+.dropdown-parent.open .arrow {
+    transform: rotate(180deg);
+}
+
+/* Выпадающее меню — появляется при наведении */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 180px;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 6px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(0.96);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    z-index: 50;
+    pointer-events: none;
+}
+/* Открываем при наведении на родителя ИЛИ при наличии класса .open */
+.dropdown-parent:hover .dropdown-menu,
+.dropdown-parent.open .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 18px;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.15s ease;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.dropdown-menu a:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+.dropdown-menu a:active {
+    transform: scale(0.97);
+}
+
         .slider-container {
             width: 100%;
             overflow: hidden;
@@ -629,7 +702,7 @@
             .songs-grid { grid-template-columns: 1fr; }
             .app-wrapper.with-sidebar .songs-container { padding-right: 0; }
             .lyrics-sidebar { width: 90%; right: -90%; }
-            .site-header { flex-direction: row; justify-content: space-between; padding: 1rem; }
+            .site-header { flex-direction: row; justify-content: space-between; padding: 1rem; padding-right: 70px; }
             .nav-links { display: none; }
             .burger-menu { display: block; }
             .logo { font-size: 1.8rem; letter-spacing: 4px; }
@@ -648,8 +721,6 @@
             .videos-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
             .video-card video { max-height: 150px; }
             .home-section .welcome-text h1 { font-size: 2rem; }
-
-            /* ПАНЕЛЬ УПРАВЛЕНИЯ ГАЛЕРЕЕЙ НА ТЕЛЕФОНЕ */
             .gallery-controls {
                 margin: 1rem 1rem 0 1rem !important;
                 padding: 0.8rem 1rem !important;
@@ -670,7 +741,6 @@
             .slider-track img { height: 120px; }
         }
 
-        /* ПАНЕЛЬ УПРАВЛЕНИЯ ГАЛЕРЕЕЙ */
         .gallery-controls {
             display: flex;
             justify-content: space-between;
@@ -725,7 +795,7 @@
                 justify-content: center;
             }
         }
-        /* ПОИСК ПО ВИДЕО */
+
         .videos-search {
             display: flex;
             gap: 12px;
@@ -793,7 +863,7 @@
                 text-align: center;
             }
         }
-                /* ПАНЕЛЬ КОММЕНТАРИЕВ */
+
         .comments-sidebar {
             position: fixed;
             right: -700px;
@@ -845,7 +915,6 @@
             color: #fff;
         }
 
-        /* ФОРМА ДОБАВЛЕНИЯ КОММЕНТАРИЯ */
         .comment-form {
             background: #0a0a0a;
             border: 1px solid #222;
@@ -898,7 +967,6 @@
             color: #000;
         }
 
-        /* СПИСОК КОММЕНТАРИЕВ */
         .comment-item {
             background: #0a0a0a;
             border: 1px solid #222;
@@ -969,7 +1037,7 @@
             height: 100%;
             z-index: 2;
             cursor: default;
-            pointer-events: none;  /* ПРОЗРАЧНЫЙ СЛОЙ ДЛЯ БЛОКИРОВКИ */
+            pointer-events: none;
         }
         .video-container {
             position: fixed;
@@ -986,12 +1054,330 @@
             object-fit: cover;
             display: block;
         }
+
+        /* ===== КНОПКА АККАУНТА ===== */
+        .account-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.6);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            padding: 0;
+        }
+        .account-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: #ffffff;
+            transform: scale(1.08);
+        }
+        .account-btn .user-icon {
+            width: 22px;
+            height: 22px;
+            display: block;
+        }
+        .account-btn .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            background: #ff2a7a;
+            border-radius: 50%;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border: 2px solid #000;
+            display: none;
+            font-weight: 700;
+        }
+        .account-btn .badge.show {
+            display: flex;
+        }
+        .account-btn.logged-in {
+            border-color: #00ff88;
+        }
+        .account-btn.logged-in .user-icon {
+            stroke: #00ff88;
+        }
+
+        /* ===== ПАНЕЛЬ АККАУНТА ===== */
+        .account-sidebar {
+            position: fixed;
+            right: -420px;
+            top: 0;
+            width: 420px;
+            height: 100vh;
+            background: #0a0a0a;
+            border-left: 1px solid #222;
+            z-index: 103;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.8);
+        }
+        .account-sidebar.open {
+            right: 0;
+        }
+        @media (max-width: 500px) {
+            .account-sidebar {
+                width: 90%;
+                right: -90%;
+            }
+        }
+
+        .account-sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #222;
+        }
+        .account-sidebar-header h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #c1bfbf;
+        }
+        .close-account-sidebar {
+            background: none;
+            border: 1px solid #333;
+            color: #aaa;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .close-account-sidebar:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        .account-form {
+            margin-bottom: 1.5rem;
+        }
+        .account-form input {
+            width: 100%;
+            background: #111;
+            border: 1px solid #333;
+            padding: 10px 14px;
+            color: white;
+            font-size: 0.8rem;
+            font-family: inherit;
+            margin-bottom: 0.8rem;
+            outline: none;
+        }
+        .account-form input:focus {
+            border-color: #fff;
+        }
+        .account-form .submit-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #fff;
+            padding: 10px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.2s;
+        }
+        .account-form .submit-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+        .account-form .error-msg {
+            color: #ff2a7a;
+            font-size: 0.7rem;
+            margin-top: -0.5rem;
+            margin-bottom: 0.8rem;
+            display: none;
+        }
+        .account-form .error-msg.show {
+            display: block;
+        }
+        .account-form .success-msg {
+            color: #00ff88;
+            font-size: 0.7rem;
+            margin-top: -0.5rem;
+            margin-bottom: 0.8rem;
+            display: none;
+        }
+        .account-form .success-msg.show {
+            display: block;
+        }
+
+        .account-divider {
+            border: none;
+            border-top: 1px solid #222;
+            margin: 1.5rem 0;
+        }
+
+        .account-info {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .account-info .username {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .account-info .user-reg-date {
+            color: #444;
+            font-size: 0.6rem;
+            margin-top: 8px;
+        }
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #ff2a7a;
+            color: #ff2a7a;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .logout-btn:hover {
+            background: #ff2a7a;
+            color: #000;
+        }
+
+        .account-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 1.5rem;
+            border: 1px solid #222;
+        }
+        .account-tabs button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .account-tabs button:hover {
+            color: #fff;
+        }
+        .account-tabs button.active {
+            background: #fff;
+            color: #000;
+        }
+        .account-tab-content {
+            display: none;
+        }
+        .account-tab-content.active {
+            display: block;
+        }
+        .account-tab-content {
+            display: none;
+        }
+        .account-tab-content.active {
+            display: block;
+        }
+        .account-tab-content h2 {
+            font-weight: 300;
+            letter-spacing: 3px;
+        }
+
+        /* ===== ИЗБРАННОЕ (ДОБАВЛЕНО) ===== */
+        .fav-btn {
+            background: transparent;
+            border: 1px solid #333;
+            padding: 5px 12px;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.1s;
+            min-width: 40px;
+        }
+        .fav-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #fff;
+        }
+        .fav-btn.active {
+            background: #ff2a7a;
+            color: #fff;
+            border-color: #ff2a7a;
+        }
+        .fav-btn.active:hover {
+            background: #ff2a7a;
+            transform: scale(1.1);
+        }
+
+        .fav-filter-btn {
+            background: transparent;
+            border: 1px solid #333;
+            padding: 4px 12px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .fav-filter-btn:hover {
+            border-color: #ff2a7a;
+            color: #fff;
+        }
+        .fav-filter-btn.active {
+            background: #ff2a7a;
+            color: #000;
+            border-color: #ff2a7a;
+        }
+        .fav-filter-btn .heart {
+            color: #ff2a7a;
+        }
+        .fav-filter-btn.active .heart {
+            color: #000;
+        }
+        footer {
+            text-align: center;
+            margin: 2rem 2rem 0 2rem;
+        padding: 1.5rem 0;
+        color: #757272;
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        border-top: 1px solid #757272;
+        position: relative;
+    }
     </style>
 </head>
 <body>
 <div class="overlay" id="overlay"></div>
 
-<!-- ВИДЕО-ФОН (ДЛЯ ЯНДЕКС БРАУЗЕРА) -->
+<!-- КНОПКА АККАУНТА -->
+<button class="account-btn" id="accountBtn" title="Аккаунт">
+    <svg class="user-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+    </svg>
+    <span class="badge" id="accountBadge"></span>
+</button>
+
+<!-- ВИДЕО-ФОН -->
 <div class="video-container" id="videoContainer">
     <video id="video-anim" class="main__img" pip="false" muted autoplay loop playsinline>
         <source src="videos/background.mp4" type="video/mp4" />
@@ -1000,7 +1386,7 @@
 </div>
 <div class="video-overlay"></div>
 
-<!-- СЕКЦИЯ HOME (ВИДЕО) -->
+<!-- СЕКЦИЯ HOME -->
 <div class="home-section" id="homeSection">
     <div class="welcome-text">
         <h1>GAGA<span style="font-weight:300;">archive</span></h1>
@@ -1029,6 +1415,7 @@
         <div class="sidebar-lyrics-content" id="sidebarLyrics">Выберите песню, чтобы увидеть полный текст</div>
     </div>
 </div>
+
 <!-- ПАНЕЛЬ КОММЕНТАРИЕВ -->
 <div class="comments-sidebar" id="commentsSidebar">
     <div class="comments-sidebar-header">
@@ -1036,7 +1423,6 @@
         <button class="close-comments-sidebar" id="closeCommentsSidebarBtn">✕ ЗАКРЫТЬ</button>
     </div>
     <div id="commentsContent">
-        <!-- ФОРМА ДОБАВЛЕНИЯ -->
         <div class="comment-form">
             <div class="form-row">
                 <input type="text" id="commentAuthor" placeholder="ВАШЕ ИМЯ">
@@ -1045,12 +1431,60 @@
             <textarea id="commentText" placeholder="НАПИШИТЕ СООБЩЕНИЕ..."></textarea>
             <button class="submit-btn" id="submitCommentBtn">📨 ОТПРАВИТЬ</button>
         </div>
-        <!-- СПИСОК КОММЕНТАРИЕВ -->
         <div id="commentsList"></div>
     </div>
 </div>
 
-<!-- МОБИЛЬНОЕ МЕНЮ -->
+<!-- ПАНЕЛЬ АККАУНТА -->
+<div class="account-sidebar" id="accountSidebar">
+    <div class="account-sidebar-header">
+        <h3>👤 АККАУНТ</h3>
+    </div>
+    <div id="accountContent">
+        <!-- ФОРМА ВХОДА -->
+        <div class="account-form" id="loginForm">
+            <h2 style="color:#fff; font-size:1.2rem; margin-bottom:1rem; letter-spacing:2px;">🔐 ВХОД</h2>
+            <input type="text" id="loginUsername" placeholder="ЛОГИН">
+            <input type="password" id="loginPassword" placeholder="ПАРОЛЬ">
+            <div class="error-msg" id="loginError"></div>
+            <div class="success-msg" id="loginSuccess"></div>
+            <button class="submit-btn" id="loginBtn">🔓 ВОЙТИ</button>
+            
+            <div style="text-align:center; margin-top:1rem; padding-top:1rem; border-top:1px solid #222;">
+                <span style="color:#666; font-size:0.7rem;">Нет аккаунта? </span>
+                <a href="#" onclick="showRegister(); return false;" style="color:#ff2a7a; font-size:0.7rem; text-decoration:none; cursor:pointer;">Зарегистрироваться</a>
+            </div>
+        </div>
+
+        <!-- ФОРМА РЕГИСТРАЦИИ -->
+        <div class="account-form" id="registerForm" style="display:none;">
+            <h2 style="color:#fff; font-size:1.2rem; margin-bottom:1rem; letter-spacing:2px;">📝 РЕГИСТРАЦИЯ</h2>
+            <input type="text" id="regUsername" placeholder="ПРИДУМАЙТЕ ЛОГИН">
+            <input type="password" id="regPassword" placeholder="ПАРОЛЬ (МИН. 6 СИМВОЛОВ)">
+            <input type="password" id="regPasswordConfirm" placeholder="ПОВТОРИТЕ ПАРОЛЬ">
+            <div class="error-msg" id="regError"></div>
+            <div class="success-msg" id="regSuccess"></div>
+            <button class="submit-btn" id="registerBtn">📝 ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            
+            <div style="text-align:center; margin-top:1rem; padding-top:1rem; border-top:1px solid #222;">
+                <span style="color:#666; font-size:0.7rem;">Уже есть аккаунт? </span>
+                <a href="#" onclick="showLogin(); return false;" style="color:#ff2a7a; font-size:0.7rem; text-decoration:none; cursor:pointer;">Войти</a>
+            </div>
+        </div>
+
+        <!-- ИНФОРМАЦИЯ О ПОЛЬЗОВАТЕЛЕ -->
+        <div id="userInfo" style="display:none;">
+            <hr class="account-divider">
+            <div class="account-info">
+                <div class="username" id="userDisplayName">—</div>
+                <div class="user-reg-date" id="userDisplayRegDate">—</div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">🚪 ВЫЙТИ</button>
+        </div>
+    </div>
+</div>
+
+<!-- МОБИЛЬНОЕ МЕНЮ (ДОБАВЛЕНЫ КНОПКИ ИЗБРАННОГО) -->
 <div class="mobile-nav" id="mobileNav">
     <button class="close-mobile-nav" id="closeMobileNav">✕</button>
     <a href="#" id="mobileHomeLink">Home</a>
@@ -1063,8 +1497,7 @@
     <a href="#" id="mobileProjectsLink">Projects</a>
     <a href="#" id="mobileLiveLink">Live</a>
 </div>
-
-<div class="app-wrapper" id="appWrapper">
+<div class="app-wrapper" id="appWrapper"></div>
     <div class="site-header">
         <div class="logo">GAGA<span>archive</span></div>
         <div class="burger-menu" id="burgerMenu">
@@ -1073,19 +1506,31 @@
             <span></span>
         </div>
         <div class="nav-links">
-            <a href="#" id="homeLink">Home</a>
-            <a href="#" id="musicLink">Music</a>
-            <a href="#" id="videosLink">Videos</a>
-            <a href="#" id="picturesLink">Pictures</a>
-            <a href="#" id="commentsLink">Comments</a>
-            <a href="#" id="gagaNewsLink" class="gaganews-link"><span class="gaga-part">GAGA</span><span class="news-part">news</span></a>
-            <a href="#" id="shopLink">Shop</a>
-            <a href="#" id="projectsLink">Projects</a>
-            <a href="#" id="liveLink">Live</a>
+            <a href="#" id="homeLink" style="padding:8px 12px; text-decoration:none;">Home</a>
+            <div class="dropdown-parent" id="artDropdown">
+                ART <span class="arrow">▾</span>
+                <div class="dropdown-menu">
+                    <a href="#" id="artMusicLink">🎵 Music</a>
+                    <a href="#" id="artVideosLink">🎬 Videos</a>
+                    <a href="#" id="artPicturesLink">🖼 Pictures</a>
+                </div>
+            </div>
+
+            <div class="dropdown-parent" id="infoDropdown">
+                INFO & SUPPORT <span class="arrow">▾</span>
+                <div class="dropdown-menu">
+                    <a href="#" id="infoCommentsLink">💬 Comments</a>
+                    <a href="#" id="infoGagaNewsLink" class="gaganews-link" style="color:#ccc;"><span class="gaga-part">GAGA</span><span class="news-part" style="color:#888;">news</span></a>
+                </div>
+            </div>
+
+            <a href="#" id="shopLink" style="padding:8px 12px;">Shop</a>
+            <a href="#" id="projectsLink" style="padding:8px 12px;">Projects</a>
+            <a href="#" id="liveLink" style="padding:8px 12px;">Live</a>
         </div>
     </div>
 
-    <!-- МУЗЫКАЛЬНЫЙ РАЗДЕЛ -->
+    <!-- МУЗЫКАЛЬНЫЙ РАЗДЕЛ (ДОБАВЛЕНА КНОПКА ИЗБРАННОГО) -->
     <div class="music-section" id="musicSection">
         <div class="slider-container" id="sliderContainer">
             <div class="slider-track" id="sliderTrack"></div>
@@ -1094,6 +1539,9 @@
             <div class="mobile-slider-track" id="mobileSliderTrack"></div>
         </div>
         <div class="stats">⟡ MONSTER ARCHIVE ⟡ 23 трека ⟡ ПОЛНЫЕ ТЕКСТЫ ⟡</div>
+        <div style="display:flex; justify-content:flex-end; padding:0.5rem 2rem; gap:10px;">
+            <button class="fav-filter-btn" id="musicFavBtn" onclick="toggleFavSongsFilter()">❤️ ИЗБРАННОЕ</button>
+        </div>
         <div class="controls">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="ПОИСК ПО НАЗВАНИЮ, ТЕКСТУ ИЛИ АЛЬБОМУ">
@@ -1114,7 +1562,6 @@
 
     <!-- ГАЛЕРЕЯ ФОТОГРАФИЙ -->
     <div class="gallery-container" id="galleryContainer">
-        <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
         <div class="gallery-controls" id="galleryControls">
             <span class="label">📐 КОЛИЧЕСТВО ФОТО В СТРОКЕ</span>
             <div class="btn-group" id="galleryGridButtons">
@@ -1127,16 +1574,18 @@
         <div class="gallery-grid" id="galleryGrid"></div>
     </div>
 
-    <!-- ВИДЕО-СЕКЦИЯ -->
-<div class="videos-container" id="videosContainer">
-    <!-- ПОИСК ПО ВИДЕО -->
-    <div class="videos-search">
-        <input type="text" id="videosSearchInput" placeholder="🔍 ПОИСК ПО ВИДЕО (например: Mayhem, Grammys, Coachella)">
-        <button id="videosSearchClear" class="search-clear-btn">✕ ОЧИСТИТЬ</button>
-        <span class="search-results-count" id="videosSearchCount">📹 0 видео</span>
+    <!-- ВИДЕО-СЕКЦИЯ (ДОБАВЛЕНА КНОПКА ИЗБРАННОГО) -->
+    <div class="videos-container" id="videosContainer">
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin:0.5rem 0;">
+            <button class="fav-filter-btn" id="videosFavBtn" onclick="toggleFavVideosFilter()">❤️ ИЗБРАННОЕ</button>
+        </div>
+        <div class="videos-search">
+            <input type="text" id="videosSearchInput" placeholder="🔍 ПОИСК ПО ВИДЕО (например: Mayhem, Grammys, Coachella)">
+            <button id="videosSearchClear" class="search-clear-btn">✕ ОЧИСТИТЬ</button>
+            <span class="search-results-count" id="videosSearchCount">📹 0 видео</span>
+        </div>
+        <div class="videos-grid" id="videosGrid"></div>
     </div>
-    <div class="videos-grid" id="videosGrid"></div>
-</div>
 
     <footer>LADY GAGA · FAN ARCHIVE · VIDEO FROM APPLE MUSIC · MAYHEM REQUIEM</footer>
 </div>
@@ -1156,7 +1605,6 @@
         "images/slide28.jpg", "images/slide29.jpg", "images/slide30.jpg"
     ];
 
-    // СПИСОК ФАЙЛОВ ДЛЯ ГАЛЕРЕИ (ТОЛЬКО ФОТО!)
     const pictureFiles = [
         "images/slide1.jpg", "images/slide2.jpg", "images/slide3.jpg",
         "images/slide4.jpg", "images/slide5.jpg", "images/slide6.jpg",
@@ -1170,10 +1618,8 @@
         "images/slide28.jpg", "images/slide29.jpg", "images/slide30.jpg"
     ];
 
-    // ========== ПЕРЕМЕННАЯ ДЛЯ КОЛИЧЕСТВА КОЛОНОК В ГАЛЕРЕЕ ==========
     let galleryColumns = 5;
 
-    // ========== СПИСОК ВИДЕО ==========
     const videoFiles = [
         {
             id: 1,
@@ -1223,14 +1669,17 @@
     ];
 
     let currentFilter = "all";
-    // ========== ПЕРЕМЕННЫЕ ДЛЯ ПОИСКА ПО ВИДЕО ==========
     let videosSearchQuery = "";
     let filteredVideoFiles = [];
 
-    // ========== ФУНКЦИЯ ДЛЯ ПОИСКА ПО ВИДЕО ==========
+    // ===== ПЕРЕМЕННЫЕ ДЛЯ ИЗБРАННЫХ (ДОБАВЛЕНО) =====
+    let favoriteSongs = [];
+    let favoriteVideos = [];
+    let showOnlyFavSongs = false;
+    let showOnlyFavVideos = false;
+
     function filterVideos(query) {
         videosSearchQuery = query.toLowerCase().trim();
-        
         if (videosSearchQuery === "") {
             filteredVideoFiles = [...videoFiles];
         } else {
@@ -1238,12 +1687,10 @@
                 video.title.toLowerCase().includes(videosSearchQuery)
             );
         }
-        
         renderFilteredVideos();
         updateVideosSearchCount();
     }
 
-    // ========== ОБНОВЛЕНИЕ СЧЁТЧИКА РЕЗУЛЬТАТОВ ==========
     function updateVideosSearchCount() {
         const countEl = document.getElementById('videosSearchCount');
         if (!countEl) return;
@@ -1256,21 +1703,40 @@
         }
     }
 
-    // ========== ОТОБРАЖЕНИЕ ОТФИЛЬТРОВАННЫХ ВИДЕО ==========
     function renderFilteredVideos() {
         const grid = document.getElementById("videosGrid");
         if (!grid) return;
         
-        if (filteredVideoFiles.length === 0 && videosSearchQuery !== "") {
-            grid.innerHTML = `<div class="no-videos-found">🔍 НИЧЕГО НЕ НАЙДЕНО ПО ЗАПРОСУ "${videosSearchQuery}"</div>`;
+        let videosToShow = [...videoFiles];
+        if (showOnlyFavVideos) {
+            videosToShow = videosToShow.filter(v => favoriteVideos.includes(v.id));
+        }
+        if (videosSearchQuery !== "") {
+            videosToShow = videosToShow.filter(video => 
+                video.title.toLowerCase().includes(videosSearchQuery)
+            );
+        }
+        
+        if (videosToShow.length === 0 && (videosSearchQuery !== "" || showOnlyFavVideos)) {
+            grid.innerHTML = `<div class="no-videos-found">
+                ${showOnlyFavVideos ? '❤️ НЕТ ИЗБРАННЫХ ВИДЕО' : '🔍 НИЧЕГО НЕ НАЙДЕНО ПО ЗАПРОСУ "' + videosSearchQuery + '"'}
+            </div>`;
             return;
         }
         
-        grid.innerHTML = "";
-        filteredVideoFiles.forEach((video, idx) => {
+        let infoHtml = '';
+        if (showOnlyFavVideos) {
+            infoHtml = `<div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid #222; margin-bottom:0.5rem;">
+                <span style="color:#ff2a7a; font-size:0.6rem; text-transform:uppercase; letter-spacing:2px;">❤️ ИЗБРАННЫЕ ВИДЕО (${videosToShow.length})</span>
+                <span style="color:#ff2a7a; font-size:0.6rem; cursor:pointer;" onclick="toggleFavVideosFilter()">✕ ОТКЛЮЧИТЬ ФИЛЬТР</span>
+            </div>`;
+        }
+        
+        grid.innerHTML = infoHtml;
+        
+        videosToShow.forEach((video, idx) => {
             const item = document.createElement("div");
             item.className = "video-card";
-            
             let videoType = video.type || detectVideoType(video.url);
             let videoHtml = '';
             if (videoType === 'google') {
@@ -1282,16 +1748,13 @@
                     <iframe src="${video.embed}" frameborder="0" allowfullscreen></iframe>
                 </div>`;
             }
-            
             const hasDownload = video.downloadUrl || videoType === 'google';
-            
-            // ПОДСВЕЧИВАЕМ СОВПАДЕНИЯ В НАЗВАНИИ
+            const isFav = isFavoriteVideo(video.id);
             let displayTitle = video.title;
             if (videosSearchQuery !== "") {
                 const regex = new RegExp(`(${videosSearchQuery})`, 'gi');
                 displayTitle = video.title.replace(regex, '<mark style="background:#ff2a7a; color:#000; padding:0 4px; border-radius:2px;">$1</mark>');
             }
-            
             item.innerHTML = `
                 ${videoHtml}
                 <div class="video-title">${displayTitle}</div>
@@ -1299,26 +1762,23 @@
                 <div class="video-buttons">
                     <button class="play-btn" data-idx="${idx}">▶ СМОТРЕТЬ</button>
                     ${hasDownload ? `<button class="download-btn" data-url="${video.downloadUrl || video.url}" data-name="${video.title}.mp4">⬇ СКАЧАТЬ</button>` : ''}
+                    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavoriteVideo(${video.id})">${isFav ? '❤️' : '🤍'}</button>
                 </div>
             `;
             grid.appendChild(item);
         });
         
-        // ПРИВЯЗЫВАЕМ ОБРАБОТЧИКИ К КНОПКАМ
         document.querySelectorAll('.video-card .play-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const idx = parseInt(btn.dataset.idx);
-                // НАХОДИМ ОРИГИНАЛЬНОЕ ВИДЕО ПО ID
-                const originalVideo = filteredVideoFiles[idx];
+                const originalVideo = videosToShow[idx];
                 if (originalVideo) {
-                    // НАХОДИМ ПОЛНЫЙ ОБЪЕКТ В ОРИГИНАЛЬНОМ МАССИВЕ
                     const fullVideo = videoFiles.find(v => v.id === originalVideo.id);
                     if (fullVideo) openVideoModal(fullVideo);
                 }
             });
         });
-        
         document.querySelectorAll('.video-card .download-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -1338,18 +1798,13 @@
         });
     }
 
-    // ========== ИНИЦИАЛИЗАЦИЯ ПОИСКА ПО ВИДЕО ==========
     function initVideosSearch() {
         const searchInput = document.getElementById('videosSearchInput');
         const clearBtn = document.getElementById('videosSearchClear');
         if (!searchInput) return;
-        
-        // ПРИ ВВОДЕ ТЕКСТА
         searchInput.addEventListener('input', function() {
             filterVideos(this.value);
         });
-        
-        // КНОПКА ОЧИСТИТЬ
         if (clearBtn) {
             clearBtn.addEventListener('click', function() {
                 searchInput.value = '';
@@ -1357,8 +1812,6 @@
                 searchInput.focus();
             });
         }
-        
-        // ПРИ НАЖАТИИ ESC — ОЧИЩАЕМ ПОИСК
         searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 this.value = '';
@@ -1366,12 +1819,13 @@
                 this.blur();
             }
         });
-    }    
+    }
+
     let searchQuery = "";
     let newsArray = [];
 
-    // ═══════════════════════════════════════════════════════════════
-    // БИБЛИОТЕКА ПЕСЕН (ВСТАВЬ СВОЮ ПОЛНУЮ ВЕРСИЮ)
+     // ═══════════════════════════════════════════════════════════════
+    //БИБЛИОТЕКА ПЕСЕН (ВСТАВЬ СВОЮ ПОЛНУЮ ВЕРСИЮ)
     // ═══════════════════════════════════════════════════════════════
      const songsDatabase = [
         // ═══════════════ THE FAME ═══════════════
@@ -1444,15 +1898,12 @@
         return `songs/${encodeURIComponent(song.folder)}/${encodeURIComponent(song.fileName)}`;
     }
 
-    // ========== ПЕРЕКЛЮЧЕНИЕ РАЗДЕЛОВ ==========
     function showHome() {
         document.getElementById('homeSection').classList.remove('hide');
         document.getElementById('musicSection').classList.remove('active');
         document.getElementById('videosContainer').classList.remove('active');
         document.getElementById('galleryContainer').classList.remove('active');
         document.getElementById('videoContainer').style.display = 'block';
-        
-        // === ПРИНУДИТЕЛЬНЫЙ ПЕРЕЗАПУСК ФОНОВОГО ВИДЕО ===
         const video = document.getElementById('backgroundVideo');
         if (video) {
             video.currentTime = 0;
@@ -1472,49 +1923,36 @@
         document.getElementById('videoContainer').style.display = 'none';
     }
 
-    // ========== ОСТАНОВКА ВСЕЙ МУЗЫКИ ==========
     function stopAllMusic() {
-        // ОСТАНАВЛИВАЕМ ГЛАВНЫЙ ПЛЕЕР (внизу страницы)
         const audioPlayer = document.getElementById("audioPlayer");
         if (audioPlayer) {
             audioPlayer.pause();
             audioPlayer.currentTime = 0;
         }
-        
-        // СБРАСЫВАЕМ ИНФОРМАЦИЮ О ТЕКУЩЕМ ТРЕКЕ
         const nowPlaying = document.getElementById("nowPlaying");
         if (nowPlaying) {
             nowPlaying.innerHTML = "🎧 ВЫБЕРИ ПЕСНЮ";
         }
-        
-        // УБИРАЕМ АКТИВНЫЙ КЛАСС С ПЛЕЕРА
         const playerArea = document.getElementById("playerArea");
         if (playerArea) {
             playerArea.classList.remove("active");
         }
-        
-        // ВОЗВРАЩАЕМ ПЛЕЙСХОЛДЕР
         const playerPlaceholder = document.getElementById("playerPlaceholder");
         if (playerPlaceholder) {
             playerPlaceholder.style.display = "block";
         }
-        
-        // ОСТАНАВЛИВАЕМ ВСЕ ВИДЕО НА СТРАНИЦЕ (если есть)
         document.querySelectorAll('video').forEach(video => {
             video.pause();
         });
     }
-    
+
     function showVideos() {
         stopAllMusic();
-        
         document.getElementById('homeSection').classList.add('hide');
         document.getElementById('musicSection').classList.remove('active');
         document.getElementById('videosContainer').classList.add('active');
         document.getElementById('galleryContainer').classList.remove('active');
         document.getElementById('videoContainer').style.display = 'none';
-        
-        // СБРАСЫВАЕМ ПОИСК ПРИ ОТКРЫТИИ
         const searchInput = document.getElementById('videosSearchInput');
         if (searchInput) {
             searchInput.value = '';
@@ -1535,7 +1973,6 @@
         renderGallery();
     }
 
-    // ========== ОПРЕДЕЛЕНИЕ ТИПА ВИДЕО ==========
     function detectVideoType(url) {
         if (!url) return 'unknown';
         if (url.includes('drive.google.com') || url.includes('google.com')) {
@@ -1559,7 +1996,6 @@
         return 'unknown';
     }
 
-    // ========== ВИДЕО ==========
     function renderVideos() {
         const grid = document.getElementById("videosGrid");
         if (!grid) return;
@@ -1567,7 +2003,6 @@
         videoFiles.forEach((video, idx) => {
             const item = document.createElement("div");
             item.className = "video-card";
-            
             let videoType = video.type || detectVideoType(video.url);
             let videoHtml = '';
             if (videoType === 'google') {
@@ -1579,10 +2014,7 @@
                     <iframe src="${video.embed}" frameborder="0" allowfullscreen></iframe>
                 </div>`;
             }
-            
-            // ВНУТРИ renderVideos(), в цикле videoFiles.forEach
             const hasDownload = video.downloadUrl || videoType === 'google';
-            
             item.innerHTML = `
                 ${videoHtml}
                 <div class="video-title">${escapeHtml(video.title)}</div>
@@ -1594,7 +2026,6 @@
             `;
             grid.appendChild(item);
         });
-        
         document.querySelectorAll('.video-card .play-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1602,7 +2033,6 @@
                 openVideoModal(videoFiles[idx]);
             });
         });
-        
         document.querySelectorAll('.video-card .download-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -1622,7 +2052,6 @@
         });
     }
 
-    // ========== ОТКРЫТИЕ ВИДЕО С ПРОГРЕССОМ ==========
     function openVideoModal(video) {
         const overlay = document.createElement('div');
         overlay.style.cssText = `
@@ -1640,7 +2069,6 @@
             flex-direction: column;
             cursor: pointer;
         `;
-        
         const container = document.createElement('div');
         container.style.cssText = `
             width: 90%;
@@ -1651,7 +2079,6 @@
             align-items: center;
             flex-direction: column;
         `;
-        
         let videoType = video.type || detectVideoType(video.url);
         const videoWrapper = document.createElement('div');
         videoWrapper.style.cssText = `
@@ -1661,11 +2088,9 @@
             border-radius: 8px;
             overflow: hidden;
         `;
-        
         let videoEl;
         let isGoogle = false;
         let isIframe = false;
-        
         if (videoType === 'google') {
             isGoogle = true;
             videoEl = document.createElement('video');
@@ -1690,11 +2115,8 @@
                 display: block;
             `;
         }
-        
         videoWrapper.appendChild(videoEl);
-        
         let progressContainer, progressBar, loadInfo, speedInfo;
-        
         if (isGoogle) {
             progressContainer = document.createElement('div');
             progressContainer.style.cssText = `
@@ -1706,7 +2128,6 @@
                 left: 0;
                 z-index: 10;
             `;
-            
             progressBar = document.createElement('div');
             progressBar.style.cssText = `
                 width: 0%;
@@ -1715,7 +2136,6 @@
                 transition: width 0.3s ease;
                 border-radius: 0 2px 2px 0;
             `;
-            
             loadInfo = document.createElement('div');
             loadInfo.style.cssText = `
                 position: absolute;
@@ -1730,7 +2150,6 @@
                 border-radius: 4px;
             `;
             loadInfo.textContent = '📥 Загрузка... 0%';
-            
             speedInfo = document.createElement('div');
             speedInfo.style.cssText = `
                 position: absolute;
@@ -1745,46 +2164,35 @@
                 border-radius: 4px;
             `;
             speedInfo.textContent = '⏱ Подготовка...';
-            
             progressContainer.appendChild(progressBar);
             videoWrapper.appendChild(progressContainer);
             videoWrapper.appendChild(loadInfo);
             videoWrapper.appendChild(speedInfo);
-            
-            // ЗАГРУЗКА ЧЕРЕЗ FETCH С ПРОГРЕССОМ
             (async () => {
                 try {
                     const response = await fetch(video.url);
                     if (!response.ok) throw new Error('Ошибка загрузки');
-                    
                     const contentLength = response.headers.get('content-length');
                     const total = parseInt(contentLength, 10);
                     const reader = response.body.getReader();
                     const chunks = [];
                     let loaded = 0;
                     const startTime = Date.now();
-                    
                     loadInfo.textContent = '📥 0% (0 / ' + (total ? (total / 1024 / 1024).toFixed(0) + ' MB' : '...') + ')';
-                    
                     while (true) {
                         const { done, value } = await reader.read();
                         if (done) break;
-                        
                         chunks.push(value);
                         loaded += value.length;
-                        
                         if (total) {
                             const percent = Math.min((loaded / total) * 100, 100);
                             progressBar.style.width = percent + '%';
-                            
                             const elapsed = (Date.now() - startTime) / 1000;
                             const speed = loaded / elapsed;
                             const remaining = (total - loaded) / speed;
-                            
                             const loadedMB = (loaded / 1024 / 1024).toFixed(0);
                             const totalMB = (total / 1024 / 1024).toFixed(0);
                             loadInfo.textContent = `📥 ${percent.toFixed(0)}% (${loadedMB} / ${totalMB} MB)`;
-                            
                             if (remaining > 0 && remaining < 3600) {
                                 const min = Math.floor(remaining / 60);
                                 const sec = Math.floor(remaining % 60);
@@ -1795,18 +2203,15 @@
                             loadInfo.textContent = `📥 ${loadedMB} MB загружено`;
                         }
                     }
-                    
                     const blob = new Blob(chunks, { type: 'video/mp4' });
                     const url = URL.createObjectURL(blob);
                     videoEl.src = url;
-                    
                     progressBar.style.width = '100%';
                     loadInfo.textContent = '✅ Загрузка завершена!';
                     setTimeout(() => {
                         if (loadInfo) loadInfo.style.display = 'none';
                         if (speedInfo) speedInfo.style.display = 'none';
                     }, 2000);
-                    
                     await videoEl.play();
                 } catch (error) {
                     console.error('Ошибка загрузки:', error);
@@ -1826,7 +2231,6 @@
                 }
             })();
         }
-        
         const titleEl = document.createElement('div');
         titleEl.textContent = video.title;
         titleEl.style.cssText = `
@@ -1836,7 +2240,6 @@
             text-align: center;
             letter-spacing: 1px;
         `;
-        
         const closeBtn = document.createElement('button');
         closeBtn.innerHTML = '✕';
         closeBtn.style.cssText = `
@@ -1865,7 +2268,6 @@
             closeBtn.style.background = 'rgba(0,0,0,0.7)';
             closeBtn.style.color = '#fff';
         };
-        
         closeBtn.onclick = (e) => {
             e.stopPropagation();
             if (videoEl && videoEl.pause) videoEl.pause();
@@ -1877,7 +2279,6 @@
                 document.body.removeChild(overlay);
             }
         };
-        
         const onEsc = (e) => {
             if (e.key === 'Escape') {
                 if (document.body.contains(overlay)) {
@@ -1888,7 +2289,6 @@
             }
         };
         document.addEventListener('keydown', onEsc);
-        
         container.appendChild(videoWrapper);
         container.appendChild(titleEl);
         overlay.appendChild(container);
@@ -1896,7 +2296,6 @@
         document.body.appendChild(overlay);
     }
 
-    // ========== НОВОСТИ ==========
     const JSONBIN_BIN_ID = "6a18065dddf5aa59f76f33fd";
     const JSONBIN_API_KEY = "$2a$10$Q.oT76K01L8Ec3NOZTDgM.E0tki.OTODFHOpSA97fHFExeMVZ5xD.";
 
@@ -1947,14 +2346,10 @@
         });
     }
 
-    // ========== ГАЛЕРЕЯ С ПОДДЕРЖКОЙ КОЛОНОК ==========
     function renderGallery() {
         const grid = document.getElementById("galleryGrid");
         if (!grid) return;
-        
-        // ПРИМЕНЯЕМ КОЛИЧЕСТВО КОЛОНОК
         grid.style.gridTemplateColumns = `repeat(${galleryColumns}, 1fr)`;
-        
         grid.innerHTML = "";
         pictureFiles.forEach((src, idx) => {
             const item = document.createElement("div");
@@ -1970,7 +2365,6 @@
             `;
             grid.appendChild(item);
         });
-        
         document.querySelectorAll('.gallery-item .download-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -1988,7 +2382,6 @@
                 } catch { alert(`Не удалось скачать: ${url}`); }
             });
         });
-        
         document.querySelectorAll('.gallery-item .expand-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -2013,41 +2406,44 @@
         document.body.appendChild(overlay);
     }
 
-    // ========== УПРАВЛЕНИЕ КОЛИЧЕСТВОМ КОЛОНОК В ГАЛЕРЕЕ ==========
     function initGalleryControls() {
         const buttons = document.querySelectorAll('#galleryGridButtons button');
         if (!buttons.length) return;
-        
         buttons.forEach(btn => {
             btn.addEventListener('click', function() {
-                // УБИРАЕМ АКТИВНЫЙ КЛАСС У ВСЕХ КНОПОК
                 buttons.forEach(b => b.classList.remove('active'));
-                // ДОБАВЛЯЕМ АКТИВНЫЙ КЛАСС НАЖАТОЙ КНОПКЕ
                 this.classList.add('active');
-                
-                // ПОЛУЧАЕМ НОВОЕ КОЛИЧЕСТВО КОЛОНОК
                 galleryColumns = parseInt(this.dataset.cols);
-                
-                // ПЕРЕРИСОВЫВАЕМ ГАЛЕРЕЮ
                 renderGallery();
             });
         });
     }
 
-    // ========== МУЗЫКА ==========
+    // ===== ИЗМЕНЕННАЯ ФУНКЦИЯ renderSongs С ФИЛЬТРОМ ИЗБРАННЫХ =====
     function renderSongs() {
         let filtered = [...songsDatabase];
         if (searchQuery.trim() !== "") {
             const q = searchQuery.trim().toLowerCase();
             filtered = filtered.filter(s => s.title.toLowerCase().includes(q) || s.lyrics.toLowerCase().includes(q) || s.album.toLowerCase().includes(q));
         }
+        if (showOnlyFavSongs) {
+            filtered = filtered.filter(s => favoriteSongs.includes(s.id));
+        }
         if (currentFilter === "az") filtered.sort((a,b) => a.title.localeCompare(b.title));
         else if (currentFilter === "album") filtered.sort((a,b) => a.album.localeCompare(b.album) || a.title.localeCompare(b.title));
         else filtered.sort((a,b) => a.id - b.id);
-
         const container = document.getElementById("songsContainer");
         if (!container) return;
-
+        
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; color:#444; padding:3rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:2px;">
+                    ${showOnlyFavSongs ? '❤️ НЕТ ИЗБРАННЫХ ПЕСЕН' : '🔍 НИЧЕГО НЕ НАЙДЕНО'}
+                </div>
+            `;
+            return;
+        }
+        
         if (currentFilter === "album") {
             let byAlbum = {};
             filtered.forEach(song => { if (!byAlbum[song.album]) byAlbum[song.album] = []; byAlbum[song.album].push(song); });
@@ -2059,13 +2455,24 @@
             }
             container.innerHTML = html;
         } else {
-            container.innerHTML = `<div class="songs-grid">${filtered.map(s => renderSongCard(s)).join("")}</div>`;
+            container.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid #222; margin-bottom:0.5rem;">
+                    <span style="color:#666; font-size:0.6rem; text-transform:uppercase; letter-spacing:2px;">
+                        ${filtered.length} треков
+                        ${showOnlyFavSongs ? '❤️ (избранные)' : ''}
+                    </span>
+                    ${showOnlyFavSongs ? `<span style="color:#ff2a7a; font-size:0.6rem; cursor:pointer;" onclick="toggleFavSongsFilter()">✕ ОТКЛЮЧИТЬ ФИЛЬТР</span>` : ''}
+                </div>
+                <div class="songs-grid">${filtered.map(s => renderSongCard(s)).join("")}</div>
+            `;
         }
         attachEvents();
     }
 
+    // ===== ИЗМЕНЕННАЯ ФУНКЦИЯ renderSongCard С КНОПКОЙ ЛАЙКА =====
     function renderSongCard(song) {
         const preview = song.lyrics.substring(0, 80).replace(/\n/g, ' ') + (song.lyrics.length > 80 ? '…' : '');
+        const isFav = isFavoriteSong(song.id);
         return `
             <div class="song-card" data-id="${song.id}">
                 <div class="song-title">${song.title}<span class="album-badge">${song.year}</span></div>
@@ -2073,7 +2480,7 @@
                 <div class="controls-card">
                     <button class="play-btn" data-id="${song.id}">▶ СЛУШАТЬ</button>
                     <button class="download-btn" data-id="${song.id}">⬇ СКАЧАТЬ</button>
-                    <button class="lyrics-btn" data-id="${song.id}">📖 ТЕКСТ</button>
+                    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavoriteSong(${song.id})">${isFav ? '❤️' : '🤍'}</button>
                 </div>
                 <div class="lyrics-preview">${preview}</div>
             </div>
@@ -2140,16 +2547,17 @@
 
     function updateAll() { renderSongs(); }
 
-    // ========== ПАНЕЛИ ==========
     function openNewsSidebar() {
         document.getElementById("newsSidebar").classList.add("open");
         document.getElementById("overlay").classList.add("active");
         loadNewsForSidebar();
     }
+
     function closeNewsSidebar() {
         document.getElementById("newsSidebar").classList.remove("open");
         document.getElementById("overlay").classList.remove("active");
     }
+
     function openLyricsSidebar(song) {
         document.getElementById("sidebarTitle").innerText = song.title;
         document.getElementById("sidebarAlbum").innerText = `${song.album} (${song.year})`;
@@ -2158,13 +2566,13 @@
         document.getElementById("overlay").classList.add("active");
         document.getElementById("appWrapper").classList.add("with-sidebar");
     }
+
     function closeLyricsSidebar() {
         document.getElementById("lyricsSidebar").classList.remove("open");
         document.getElementById("overlay").classList.remove("active");
         document.getElementById("appWrapper").classList.remove("with-sidebar");
     }
 
-    // ========== СЛАЙДЕРЫ ==========
     function initSlider() {
         const track = document.getElementById("sliderTrack");
         if (!track) return;
@@ -2193,31 +2601,54 @@
         }
     }
 
-    // ========== МЕНЮ ==========
+    // ===== ИЗМЕНЕННАЯ ФУНКЦИЯ initMobileMenu С КНОПКАМИ ИЗБРАННОГО =====
     function initMobileMenu() {
         const burger = document.getElementById("burgerMenu");
         const mobileNav = document.getElementById("mobileNav");
         const closeBtn = document.getElementById("closeMobileNav");
         const overlay = document.getElementById("overlay");
-        
         burger?.addEventListener("click", () => { mobileNav.classList.add("open"); overlay.classList.add("active"); });
         closeBtn?.addEventListener("click", () => { mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         overlay.addEventListener("click", () => { mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
-        
         document.getElementById("mobileHomeLink")?.addEventListener("click", (e) => { e.preventDefault(); showHome(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         document.getElementById("mobileMusicLink")?.addEventListener("click", (e) => { e.preventDefault(); showMusic(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
+        document.getElementById("mobileMusicFavLink")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            showMusic();
+            toggleFavSongsFilter();
+            mobileNav.classList.remove("open");
+            overlay.classList.remove("active");
+        });
         document.getElementById("mobileVideosLink")?.addEventListener("click", (e) => { e.preventDefault(); showVideos(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
+        document.getElementById("mobileVideosFavLink")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            showVideos();
+            toggleFavVideosFilter();
+            mobileNav.classList.remove("open");
+            overlay.classList.remove("active");
+        });
         document.getElementById("mobilePicturesLink")?.addEventListener("click", (e) => { e.preventDefault(); showPictures(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
+        document.getElementById("mobileCommentsLink")?.addEventListener("click", (e) => { e.preventDefault(); openCommentsSidebar(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         document.getElementById("mobileGagaNewsLink")?.addEventListener("click", (e) => { e.preventDefault(); openNewsSidebar(); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         document.getElementById("mobileShopLink")?.addEventListener("click", (e) => { e.preventDefault(); window.open("https://www.ladygaga.com/us-en/shop/collections/all", "_blank"); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         document.getElementById("mobileProjectsLink")?.addEventListener("click", (e) => { e.preventDefault(); window.open("https://bornthisway.foundation/", "_blank"); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
         document.getElementById("mobileLiveLink")?.addEventListener("click", (e) => { e.preventDefault(); window.open("https://www.ladygaga.com/us-en/live", "_blank"); mobileNav.classList.remove("open"); overlay.classList.remove("active"); });
     }
 
-    // ОБРАБОТЧИКИ ПК КНОПОК
+    // ===== ОБРАБОТЧИКИ ДЛЯ КНОПОК ИЗБРАННОГО В НАВИГАЦИИ =====
     document.getElementById("homeLink")?.addEventListener("click", (e) => { e.preventDefault(); showHome(); });
     document.getElementById("musicLink")?.addEventListener("click", (e) => { e.preventDefault(); showMusic(); });
+    document.getElementById("musicFavLink")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        showMusic();
+        toggleFavSongsFilter();
+    });
     document.getElementById("videosLink")?.addEventListener("click", (e) => { e.preventDefault(); showVideos(); });
+    document.getElementById("videosFavLink")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        showVideos();
+        toggleFavVideosFilter();
+    });
     document.getElementById("picturesLink")?.addEventListener("click", (e) => { e.preventDefault(); showPictures(); });
     document.getElementById("gagaNewsLink")?.addEventListener("click", (e) => { e.preventDefault(); openNewsSidebar(); });
     document.getElementById("shopLink")?.addEventListener("click", (e) => { e.preventDefault(); window.open("https://www.ladygaga.com/us-en/shop/collections/all", "_blank"); });
@@ -2235,43 +2666,32 @@
     });
     document.getElementById("closeSidebarBtn")?.addEventListener("click", closeLyricsSidebar);
     document.getElementById("closeNewsSidebarBtn")?.addEventListener("click", closeNewsSidebar);
-    document.getElementById("overlay")?.addEventListener("click", () => { closeLyricsSidebar(); closeNewsSidebar(); });
 
-    // ========== ПРИНУДИТЕЛЬНОЕ ВОСПРОИЗВЕДЕНИЕ ФОНОВОГО ВИДЕО ==========
     function ensureVideoPlays() {
         const video = document.getElementById('backgroundVideo');
         if (!video) return;
-        
-        // ПРОБУЕМ ЗАПУСТИТЬ
         video.play().catch(function(error) {
             console.log('Автовоспроизведение заблокировано, пробуем снова...');
             setTimeout(() => {
                 video.play().catch(() => {});
             }, 1000);
         });
-        
-        // ЕСЛИ ВИДЕО ОСТАНОВИЛОСЬ - ПЕРЕЗАПУСКАЕМ
         video.addEventListener('ended', function() {
             this.currentTime = 0;
             this.play().catch(() => {});
         });
-        
-        // ПРИ ПОЛУЧЕНИИ ФОКУСА - ПЕРЕЗАПУСКАЕМ
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden) {
                 video.play().catch(() => {});
             }
         });
-        
-        // ДОБАВЛЯЕМ ПОВТОРНУЮ ПОПЫТКУ ЧЕРЕЗ 2 СЕКУНДЫ
         setTimeout(() => {
             video.play().catch(() => {});
         }, 2000);
-    } 
-    // ========== КОММЕНТАРИИ (С JSONBin.io) ==========
-    const COMMENTS_BIN_ID = "6a32ec90da38895dfed248a0";  // ← СОЗДАЙ НОВЫЙ BIN!
+    }
+
+    const COMMENTS_BIN_ID = "6a32ec90da38895dfed248a0";
     const COMMENTS_API_KEY = "$2a$10$Q.oT76K01L8Ec3NOZTDgM.E0tki.OTODFHOpSA97fHFExeMVZ5xD.";
-    
     let commentsArray = [];
 
     async function loadComments() {
@@ -2279,14 +2699,11 @@
         if (container) {
             container.innerHTML = '<div class="empty-comments">📭 ЗАГРУЗКА КОММЕНТАРИЕВ...</div>';
         }
-        
         try {
             const response = await fetch(`https://api.jsonbin.io/v3/b/${COMMENTS_BIN_ID}/latest`, {
                 headers: { "X-Master-Key": COMMENTS_API_KEY }
             });
-            
             if (!response.ok) throw new Error("Ошибка загрузки комментариев");
-            
             const data = await response.json();
             commentsArray = data.record?.comments || [];
             renderComments();
@@ -2300,22 +2717,16 @@
 
     async function saveCommentsToServer() {
         try {
-            // ПОЛУЧАЕМ ТЕКУЩИЕ ДАННЫЕ
             const getResponse = await fetch(`https://api.jsonbin.io/v3/b/${COMMENTS_BIN_ID}/latest`, {
                 headers: { "X-Master-Key": COMMENTS_API_KEY }
             });
-            
             if (!getResponse.ok) throw new Error("Не удалось получить данные");
-            
             const currentData = await getResponse.json();
             let record = currentData.record;
-            
             if (!record || typeof record !== 'object') {
                 record = {};
             }
-            
             record.comments = commentsArray;
-            
             const putResponse = await fetch(`https://api.jsonbin.io/v3/b/${COMMENTS_BIN_ID}`, {
                 method: "PUT",
                 headers: {
@@ -2324,9 +2735,7 @@
                 },
                 body: JSON.stringify(record)
             });
-            
             if (!putResponse.ok) throw new Error("Ошибка сохранения");
-            
             renderComments();
         } catch (error) {
             console.error("Ошибка сохранения комментариев:", error);
@@ -2337,12 +2746,10 @@
     function renderComments() {
         const container = document.getElementById("commentsList");
         if (!container) return;
-        
         if (commentsArray.length === 0) {
             container.innerHTML = '<div class="empty-comments">💬 ПОКА НЕТ КОММЕНТАРИЕВ. БУДЬ ПЕРВЫМ!</div>';
             return;
         }
-        
         const sorted = [...commentsArray].reverse();
         container.innerHTML = sorted.map(comment => `
             <div class="comment-item" data-id="${comment.id}">
@@ -2354,7 +2761,6 @@
                 <button class="delete-comment-btn" data-id="${comment.id}">🗑 УДАЛИТЬ</button>
             </div>
         `).join("");
-        
         document.querySelectorAll('.delete-comment-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const id = parseInt(btn.dataset.id);
@@ -2370,7 +2776,7 @@
         document.getElementById("commentsSidebar").classList.add("open");
         document.getElementById("overlay").classList.add("active");
         updateDateTime();
-        loadComments(); // ЗАГРУЖАЕМ СВЕЖИЕ КОММЕНТАРИИ
+        loadComments();
     }
 
     function closeCommentsSidebar() {
@@ -2385,37 +2791,29 @@
         dateInput.value = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
 
-    // ДОБАВЛЕНИЕ КОММЕНТАРИЯ
     document.getElementById("submitCommentBtn")?.addEventListener("click", async () => {
         const author = document.getElementById("commentAuthor").value.trim() || "Аноним";
         const text = document.getElementById("commentText").value.trim();
-        
         if (!text) {
             alert("Напишите сообщение!");
             return;
         }
-        
         const now = new Date();
         const dateStr = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-        
         const newComment = {
             id: Date.now(),
             author: author,
             text: text,
             date: dateStr
         };
-        
         commentsArray.push(newComment);
         await saveCommentsToServer();
-        
         document.getElementById("commentAuthor").value = "";
         document.getElementById("commentText").value = "";
         updateDateTime();
-        
         alert("✅ Комментарий опубликован и виден всем!");
     });
 
-    // ОБНОВЛЕНИЕ ДАТЫ ПРИ ОТКРЫТИИ ПАНЕЛИ
     document.getElementById("commentsLink")?.addEventListener("click", (e) => {
         e.preventDefault();
         openCommentsSidebar();
@@ -2427,23 +2825,467 @@
         overlay.classList.remove("active");
     });
     document.getElementById("closeCommentsSidebarBtn")?.addEventListener("click", closeCommentsSidebar);
+
+    // ========== АККАУНТ ==========
+    const ACCOUNTS_BIN_ID = "6a340e97f5f4af5e290980e5";
+    const ACCOUNTS_API_KEY = "$2a$10$Q.oT76K01L8Ec3NOZTDgM.E0tki.OTODFHOpSA97fHFExeMVZ5xD.";
+
+    let currentUser = null;
+    let accountsArray = [];
+
+    async function loadAccounts() {
+        try {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${ACCOUNTS_BIN_ID}/latest`, {
+                headers: { "X-Master-Key": ACCOUNTS_API_KEY }
+            });
+            if (!response.ok) throw new Error("Ошибка загрузки");
+            const data = await response.json();
+            accountsArray = data.record?.accounts || [];
+        } catch (error) {
+            console.error("Ошибка загрузки аккаунтов:", error);
+            accountsArray = [];
+        }
+    }
+
+    async function saveAccounts() {
+        try {
+            const getResponse = await fetch(`https://api.jsonbin.io/v3/b/${ACCOUNTS_BIN_ID}/latest`, {
+                headers: { "X-Master-Key": ACCOUNTS_API_KEY }
+            });
+            if (!getResponse.ok) throw new Error("Не удалось получить данные");
+            const currentData = await getResponse.json();
+            let record = currentData.record || {};
+            record.accounts = accountsArray;
+            await fetch(`https://api.jsonbin.io/v3/b/${ACCOUNTS_BIN_ID}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Master-Key": ACCOUNTS_API_KEY
+                },
+                body: JSON.stringify(record)
+            });
+        } catch (error) {
+            console.error("Ошибка сохранения аккаунтов:", error);
+        }
+    }
+
+    function checkAuth() {
+        const saved = localStorage.getItem("gaga_current_user");
+        if (saved) {
+            try {
+                currentUser = JSON.parse(saved);
+                updateAccountUI();
+                return true;
+            } catch { return false; }
+        }
+        return false;
+    }
+
+    function updateAccountUI() {
+        const userInfo = document.getElementById("userInfo");
+        const badge = document.getElementById("accountBadge");
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+
+        if (currentUser) {
+            if (loginForm) loginForm.style.display = 'none';
+            if (registerForm) registerForm.style.display = 'none';
+            if (userInfo) {
+                userInfo.style.display = 'block';
+                document.getElementById("userDisplayName").textContent = currentUser.username;
+                document.getElementById("userDisplayRegDate").textContent = `Зарегистрирован: ${currentUser.regDate || '—'}`;
+            }
+            if (badge) {
+                badge.textContent = '✓';
+                badge.classList.add('show');
+                badge.style.background = '#00ff88';
+            }
+            document.getElementById("accountBtn").classList.add('logged-in');
+        } else {
+            if (loginForm) loginForm.style.display = 'block';
+            if (registerForm) registerForm.style.display = 'none';
+            if (userInfo) userInfo.style.display = 'none';
+            if (badge) badge.classList.remove('show');
+            document.getElementById("accountBtn").classList.remove('logged-in');
+        }
+    }
+
+    // РЕГИСТРАЦИЯ
+    document.getElementById("registerBtn")?.addEventListener("click", async function() {
+        const username = document.getElementById("regUsername").value.trim();
+        const password = document.getElementById("regPassword").value;
+        const confirm = document.getElementById("regPasswordConfirm").value;
+        const errorEl = document.getElementById("regError");
+        const successEl = document.getElementById("regSuccess");
+
+        errorEl.classList.remove('show');
+        successEl.classList.remove('show');
+
+        if (!username || username.length < 3) {
+            errorEl.textContent = "Логин должен быть минимум 3 символа";
+            errorEl.classList.add('show');
+            return;
+        }
+        if (password.length < 6) {
+            errorEl.textContent = "Пароль должен быть минимум 6 символов";
+            errorEl.classList.add('show');
+            return;
+        }
+        if (password !== confirm) {
+            errorEl.textContent = "Пароли не совпадают";
+            errorEl.classList.add('show');
+            return;
+        }
+
+        await loadAccounts();
+        if (accountsArray.some(a => a.username.toLowerCase() === username.toLowerCase())) {
+            errorEl.textContent = "Пользователь с таким логином уже существует";
+            errorEl.classList.add('show');
+            return;
+        }
+
+        const newUser = {
+            id: Date.now(),
+            username: username,
+            password: password,
+            regDate: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
+        };
+
+        accountsArray.push(newUser);
+        await saveAccounts();
+
+        successEl.textContent = "✅ Регистрация успешна! Теперь войдите.";
+        successEl.classList.add('show');
+        setTimeout(() => {
+            closeAccountSidebar();
+        }, 1500);
+
+        document.getElementById("regUsername").value = "";
+        document.getElementById("regPassword").value = "";
+        document.getElementById("regPasswordConfirm").value = "";
+
+        document.querySelectorAll('.account-tabs button').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-tab="login"]').classList.add('active');
+        document.getElementById('tabLogin').classList.add('active');
+        document.getElementById('tabRegister').classList.remove('active');
+    });
+
+    // ВХОД
+    document.getElementById("loginBtn")?.addEventListener("click", async function() {
+        const username = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        const errorEl = document.getElementById("loginError");
+        const successEl = document.getElementById("loginSuccess");
+
+        errorEl.classList.remove('show');
+        successEl.classList.remove('show');
+
+        if (!username || !password) {
+            errorEl.textContent = "Заполните все поля";
+            errorEl.classList.add('show');
+            return;
+        }
+
+        await loadAccounts();
+        const user = accountsArray.find(a => 
+            a.username.toLowerCase() === username.toLowerCase() && 
+            a.password === password
+        );
+
+        if (!user) {
+            errorEl.textContent = "Неверный логин или пароль";
+            errorEl.classList.add('show');
+            return;
+        }
+
+        currentUser = { ...user };
+        delete currentUser.password;
+        localStorage.setItem("gaga_current_user", JSON.stringify(currentUser));
+        updateAccountUI();
+
+        successEl.textContent = "✅ Добро пожаловать, " + user.username + "!";
+        successEl.classList.add('show');
+
+        document.getElementById("loginUsername").value = "";
+        document.getElementById("loginPassword").value = "";
+
+        setTimeout(() => {
+            closeAccountSidebar();
+        }, 1500);
+    });
+
+    // ВЫХОД
+    document.getElementById("logoutBtn")?.addEventListener("click", function() {
+        if (confirm("Выйти из аккаунта?")) {
+            currentUser = null;
+            localStorage.removeItem("gaga_current_user");
+            updateAccountUI();
+            closeAccountSidebar();
+        }
+    });
+
+    // ОТКРЫТИЕ/ЗАКРЫТИЕ ПАНЕЛИ
+    function openAccountSidebar() {
+        document.getElementById("accountSidebar").classList.add("open");
+        document.getElementById("overlay").classList.add("active");
+        updateAccountUI();
+    }
+
+    function closeAccountSidebar() {
+        document.getElementById("accountSidebar").classList.remove("open");
+        document.getElementById("overlay").classList.remove("active");
+    }
+
+    document.getElementById("accountBtn")?.addEventListener("click", openAccountSidebar);
+    document.getElementById("closeAccountSidebarBtn")?.addEventListener("click", closeAccountSidebar);
+
+    // ПЕРЕКЛЮЧЕНИЕ ТАБОВ В АККАУНТЕ
+    document.querySelectorAll('.account-tabs button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.account-tabs button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            document.querySelectorAll('.account-tab-content').forEach(c => c.classList.remove('active'));
+            const tabId = this.dataset.tab === 'login' ? 'tabLogin' : 'tabRegister';
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // ОБНОВЛЕННЫЙ ОБРАБОТЧИК OVERLAY
     document.getElementById("overlay")?.addEventListener("click", () => { 
-    closeLyricsSidebar(); 
-    closeNewsSidebar();
-    closeCommentsSidebar(); // ← ДОБАВЬ ЭТУ СТРОКУ
-});  
+        closeLyricsSidebar(); 
+        closeNewsSidebar();
+        closeCommentsSidebar();
+        closeAccountSidebar(); 
+    });
+
+    // ===== ПЕРЕКЛЮЧЕНИЕ МЕЖДУ ВХОДОМ И РЕГИСТРАЦИЕЙ =====
+    function showLoginForm() {
+        document.getElementById('tabLogin').classList.add('active');
+        document.getElementById('tabRegister').classList.remove('active');
+        document.getElementById('loginError').classList.remove('show');
+        document.getElementById('regError').classList.remove('show');
+    }
+
+    function showRegisterForm() {
+        document.getElementById('tabRegister').classList.add('active');
+        document.getElementById('tabLogin').classList.remove('active');
+        document.getElementById('loginError').classList.remove('show');
+        document.getElementById('regError').classList.remove('show');
+    }
+
+    // ОБРАБОТЧИКИ ДЛЯ ССЫЛОК
+    document.addEventListener('DOMContentLoaded', function() {
+        var switchToRegister = document.getElementById('switchToRegisterLink');
+        var switchToLogin = document.getElementById('switchToLoginLink');
+        if (switchToRegister) {
+            switchToRegister.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRegisterForm();
+            });
+        }
+        if (switchToLogin) {
+            switchToLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                showLoginForm();
+            });
+        }
+    });
+
+    // ===== ПЕРЕКЛЮЧЕНИЕ ФОРМ =====
+    function showLogin() {
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('loginError').classList.remove('show');
+        document.getElementById('regError').classList.remove('show');
+    }
+
+    function showRegister() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'block';
+        document.getElementById('loginError').classList.remove('show');
+        document.getElementById('regError').classList.remove('show');
+    }
+
+    // ===== ФУНКЦИИ ДЛЯ ИЗБРАННЫХ ПЕСЕН (ДОБАВЛЕНО) =====
+    function loadFavorites() {
+        try {
+            const saved = localStorage.getItem('gaga_favorite_songs');
+            favoriteSongs = saved ? JSON.parse(saved) : [];
+        } catch {
+            favoriteSongs = [];
+        }
+    }
+
+    function saveFavorites() {
+        try {
+            localStorage.setItem('gaga_favorite_songs', JSON.stringify(favoriteSongs));
+        } catch {}
+    }
+
+    function toggleFavoriteSong(songId) {
+        const index = favoriteSongs.indexOf(songId);
+        if (index === -1) {
+            favoriteSongs.push(songId);
+        } else {
+            favoriteSongs.splice(index, 1);
+        }
+        saveFavorites();
+        renderSongs();
+    }
+
+    function isFavoriteSong(songId) {
+        return favoriteSongs.includes(songId);
+    }
+
+    // ===== ФУНКЦИИ ДЛЯ ИЗБРАННЫХ ВИДЕО (ДОБАВЛЕНО) =====
+    function loadFavoriteVideos() {
+        try {
+            const saved = localStorage.getItem('gaga_favorite_videos');
+            favoriteVideos = saved ? JSON.parse(saved) : [];
+        } catch {
+            favoriteVideos = [];
+        }
+    }
+
+    function saveFavoriteVideos() {
+        try {
+            localStorage.setItem('gaga_favorite_videos', JSON.stringify(favoriteVideos));
+        } catch {}
+    }
+
+    function toggleFavoriteVideo(videoId) {
+        const index = favoriteVideos.indexOf(videoId);
+        if (index === -1) {
+            favoriteVideos.push(videoId);
+        } else {
+            favoriteVideos.splice(index, 1);
+        }
+        saveFavoriteVideos();
+        renderFilteredVideos();
+    }
+
+    function isFavoriteVideo(videoId) {
+        return favoriteVideos.includes(videoId);
+    }
+
+    // ===== ПЕРЕКЛЮЧЕНИЕ ФИЛЬТРОВ (ДОБАВЛЕНО) =====
+    function toggleFavSongsFilter() {
+        showOnlyFavSongs = !showOnlyFavSongs;
+        const btn = document.getElementById('musicFavBtn');
+        if (btn) {
+            btn.classList.toggle('active');
+            btn.innerHTML = showOnlyFavSongs ? '❤️ ИЗБРАННОЕ ВКЛ' : '❤️ ИЗБРАННОЕ';
+        }
+        renderSongs();
+    }
+
+    function toggleFavVideosFilter() {
+        showOnlyFavVideos = !showOnlyFavVideos;
+        const btn = document.getElementById('videosFavBtn');
+        if (btn) {
+            btn.classList.toggle('active');
+            btn.innerHTML = showOnlyFavVideos ? '❤️ ИЗБРАННОЕ ВКЛ' : '❤️ ИЗБРАННОЕ';
+        }
+        filteredVideoFiles = [...videoFiles];
+        if (showOnlyFavVideos) {
+            filteredVideoFiles = filteredVideoFiles.filter(v => favoriteVideos.includes(v.id));
+        }
+        renderFilteredVideos();
+        updateVideosSearchCount();
+    }
+
     // ЗАПУСК
     initSlider();
     initMobileSlider();
     initMobileMenu();
     initGalleryControls();
-    initVideosSearch();      // ← ДОБАВЬ ЭТУ СТРОКУ
+    initVideosSearch();
+    checkAuth();
     ensureVideoPlays();
     loadComments();
+    loadFavorites();
+    loadFavoriteVideos();
     showHome();
     renderSongs();
     loadNewsForSidebar();
     watchNewsUpdates();
+
+    // ================================================================
+    // ===== НОВЫЕ ОБРАБОТЧИКИ ДЛЯ ВЫПАДАЮЩИХ КНОПОК (ART и INFO) =====
+    // ================================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Переключение dropdown при клике на родителя
+        document.querySelectorAll('.dropdown-parent').forEach(parent => {
+            parent.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Закрываем все остальные dropdown
+                document.querySelectorAll('.dropdown-parent').forEach(p => {
+                    if (p !== this) p.classList.remove('open');
+                });
+                this.classList.toggle('open');
+            });
+        });
+
+        // Закрываем dropdown при клике вне
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown-parent').forEach(p => {
+                p.classList.remove('open');
+            });
+        });
+
+        // Обработчики для ART dropdown
+        document.getElementById('artMusicLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showMusic();
+            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+        });
+        document.getElementById('artVideosLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showVideos();
+            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+        });
+        document.getElementById('artPicturesLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showPictures();
+            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+        });
+
+        // Обработчики для INFO & SUPPORT dropdown
+        document.getElementById('infoCommentsLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            openCommentsSidebar();
+            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+        });
+        document.getElementById('infoGagaNewsLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            openNewsSidebar();
+            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+        });
+
+        // Home
+        document.getElementById('homeLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showHome();
+            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+        });
+
+        // Shop, Projects, Live
+        document.getElementById('shopLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.open('https://www.ladygaga.com/us-en/shop/collections/all', '_blank');
+            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+        });
+        document.getElementById('projectsLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.open('https://bornthisway.foundation/', '_blank');
+            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+        });
+        document.getElementById('liveLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.open('https://www.ladygaga.com/us-en/live', '_blank');
+            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+        });
+    });    
 </script>
 </body>
 </html>
