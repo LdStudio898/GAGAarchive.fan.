@@ -491,6 +491,88 @@
 .dropdown-menu a:active {
     transform: scale(0.97);
 }
+/* ===== СТИЛИ ДЛЯ ВЫПАДАЮЩИХ КНОПОК (ТОЛЬКО HOVER) ===== */
+.dropdown-parent {
+    position: relative;
+    cursor: pointer;
+    padding: 8px 12px;
+    background: transparent;
+    backdrop-filter: blur(8px);
+    border: none;
+    color: #aaa;
+    transition: all 0.25s ease;
+    user-select: none;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.dropdown-parent:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+.dropdown-parent .arrow {
+    display: inline-block;
+    margin-left: 6px;
+    transition: transform 0.3s ease;
+    font-size: 0.6rem;
+}
+/* Стрелка поворачивается при наведении НА РОДИТЕЛЯ */
+.dropdown-parent:hover .arrow {
+    transform: rotate(180deg);
+}
+/* Или если есть класс .open (для обратной совместимости) */
+.dropdown-parent.open .arrow {
+    transform: rotate(180deg);
+}
+
+/* Выпадающее меню — появляется при наведении */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 180px;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 6px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(0.96);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    z-index: 50;
+    pointer-events: none;
+}
+/* Открываем ТОЛЬКО при наведении на родителя */
+.dropdown-parent:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;  /* ← ВАЖНО: чтобы можно было кликать по пунктам */
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 18px;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.15s ease;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.dropdown-menu a:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+.dropdown-menu a:active {
+    transform: scale(0.97);
+}
 
         .slider-container {
             width: 100%;
@@ -1398,7 +1480,6 @@
 <div class="news-sidebar" id="newsSidebar">
     <div class="news-sidebar-header">
         <h3>📰 GAGAnews</h3>
-        <button class="close-news-sidebar" id="closeNewsSidebarBtn">✕ ЗАКРЫТЬ</button>
     </div>
     <div id="newsSidebarContent"><div class="empty-news">📭 ЗАГРУЗКА НОВОСТЕЙ...</div></div>
 </div>
@@ -1507,22 +1588,22 @@
         </div>
         <div class="nav-links">
             <a href="#" id="homeLink" style="padding:8px 12px; text-decoration:none;">Home</a>
-            <div class="dropdown-parent" id="artDropdown">
-                ART <span class="arrow">▾</span>
-                <div class="dropdown-menu">
-                    <a href="#" id="artMusicLink">🎵 Music</a>
-                    <a href="#" id="artVideosLink">🎬 Videos</a>
-                    <a href="#" id="artPicturesLink">🖼 Pictures</a>
-                </div>
-            </div>
+<div class="dropdown-parent" id="artDropdown">
+    ART <span class="arrow">▾</span>
+    <div class="dropdown-menu">
+        <a href="#" id="artMusicLink">🎵 Music</a>
+        <a href="#" id="artVideosLink">🎬 Videos</a>
+        <a href="#" id="artPicturesLink">🖼 Pictures</a>
+    </div>
+</div>
 
-            <div class="dropdown-parent" id="infoDropdown">
-                INFO & SUPPORT <span class="arrow">▾</span>
-                <div class="dropdown-menu">
-                    <a href="#" id="infoCommentsLink">💬 Comments</a>
-                    <a href="#" id="infoGagaNewsLink" class="gaganews-link" style="color:#ccc;"><span class="gaga-part">GAGA</span><span class="news-part" style="color:#888;">news</span></a>
-                </div>
-            </div>
+<div class="dropdown-parent" id="infoDropdown">
+    INFO & SUPPORT <span class="arrow">▾</span>
+    <div class="dropdown-menu">
+        <a href="#" id="infoCommentsLink">💬 Comments</a>
+        <a href="#" id="infoGagaNewsLink" class="gaganews-link" style="color:#ccc;"><span class="gaga-part">GAGA</span><span class="news-part" style="color:#888;">news</span></a>
+    </div>
+</div>
 
             <a href="#" id="shopLink" style="padding:8px 12px;">Shop</a>
             <a href="#" id="projectsLink" style="padding:8px 12px;">Projects</a>
@@ -3210,82 +3291,67 @@
     loadNewsForSidebar();
     watchNewsUpdates();
 
-    // ================================================================
-    // ===== НОВЫЕ ОБРАБОТЧИКИ ДЛЯ ВЫПАДАЮЩИХ КНОПОК (ART и INFO) =====
-    // ================================================================
-    document.addEventListener('DOMContentLoaded', function() {
-        // Переключение dropdown при клике на родителя
-        document.querySelectorAll('.dropdown-parent').forEach(parent => {
-            parent.addEventListener('click', function(e) {
-                e.stopPropagation();
-                // Закрываем все остальные dropdown
-                document.querySelectorAll('.dropdown-parent').forEach(p => {
-                    if (p !== this) p.classList.remove('open');
-                });
-                this.classList.toggle('open');
-            });
-        });
+// ================================================================
+// ===== НОВЫЕ ОБРАБОТЧИКИ ДЛЯ ВЫПАДАЮЩИХ КНОПОК (ТОЛЬКО HOVER) =====
+// ================================================================
+document.addEventListener('DOMContentLoaded', function() {
+    // НЕ НУЖНО открывать/закрывать по клику — только hover!
+    // Но оставляем обработчики для пунктов меню
+    
+    // Обработчики для ART dropdown
+    document.getElementById('artMusicLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        showMusic();
+        // Закрываем меню (опционально)
+        document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+    });
+    document.getElementById('artVideosLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        showVideos();
+        document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+    });
+    document.getElementById('artPicturesLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        showPictures();
+        document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+    });
 
-        // Закрываем dropdown при клике вне
-        document.addEventListener('click', function() {
-            document.querySelectorAll('.dropdown-parent').forEach(p => {
-                p.classList.remove('open');
-            });
-        });
+    // Обработчики для INFO & SUPPORT dropdown
+    document.getElementById('infoCommentsLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        openCommentsSidebar();
+        document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+    });
+    document.getElementById('infoGagaNewsLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        openNewsSidebar();
+        document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+    });
 
-        // Обработчики для ART dropdown
-        document.getElementById('artMusicLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            showMusic();
-            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
-        });
-        document.getElementById('artVideosLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            showVideos();
-            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
-        });
-        document.getElementById('artPicturesLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            showPictures();
-            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
-        });
+    // Home
+    document.getElementById('homeLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        showHome();
+        document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+    });
 
-        // Обработчики для INFO & SUPPORT dropdown
-        document.getElementById('infoCommentsLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            openCommentsSidebar();
-            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
-        });
-        document.getElementById('infoGagaNewsLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            openNewsSidebar();
-            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
-        });
-
-        // Home
-        document.getElementById('homeLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            showHome();
-            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
-        });
-
-        // Shop, Projects, Live
-        document.getElementById('shopLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.open('https://www.ladygaga.com/us-en/shop/collections/all', '_blank');
-            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
-        });
-        document.getElementById('projectsLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.open('https://bornthisway.foundation/', '_blank');
-            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
-        });
-        document.getElementById('liveLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.open('https://www.ladygaga.com/us-en/live', '_blank');
-            document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
-        });
-    });    
+    // Shop, Projects, Live
+    document.getElementById('shopLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.open('https://www.ladygaga.com/us-en/shop/collections/all', '_blank');
+        document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+    });
+    document.getElementById('projectsLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.open('https://bornthisway.foundation/', '_blank');
+        document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+    });
+    document.getElementById('liveLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.open('https://www.ladygaga.com/us-en/live', '_blank');
+        document.querySelectorAll('.dropdown-parent').forEach(p => p.classList.remove('open'));
+    });
+});
 </script>
 </body>
 </html>
