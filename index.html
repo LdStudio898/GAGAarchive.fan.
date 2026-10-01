@@ -1171,11 +1171,11 @@
             .test-option { padding: 12px 14px; font-size: 0.85rem; }
             .test-btn { padding: 9px 16px; font-size: 0.65rem; letter-spacing: 1.5px; }
         }
-        
+
         /* Скрыть кнопку "СБРОСИТЬ" в тесте */
         #testResetBtn {
             display: none !important;
-        }    
+        }
     </style>
 </head>
 <body>
@@ -2348,12 +2348,10 @@ function updateAccountUI() {
         if (badge) badge.classList.remove('show');
         document.getElementById('accountBtn').classList.remove('logged-in');
     }
-    // ← ПЕРЕКЛЮЧАЕМ ДАННЫЕ ТЕСТА И ПЛЕЙЛИСТОВ ПОД ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ
     resetTestForCurrentUser();
     reloadPlaylistsForCurrentUser();
 }
 
-/* Сбрасывает состояние теста и перезагружает данные под текущего пользователя */
 function resetTestForCurrentUser() {
     testAnswers = {};
     testCurrentIndex = 0;
@@ -2363,9 +2361,8 @@ function resetTestForCurrentUser() {
     }
 }
 
-/* Перезагружает плейлисты под текущего пользователя */
-function reloadPlaylistsForCurrentUser() {
-    loadPlaylists();
+async function reloadPlaylistsForCurrentUser() {
+    await loadPlaylists();
     const el = document.getElementById('playlistsSidebar');
     if (el && el.classList.contains('open')) {
         renderPlaylists();
@@ -2514,33 +2511,81 @@ window.__tryToggleFavSong = toggleFavoriteSong;
 window.__tryToggleFavVideo = toggleFavoriteVideo;
 
 /* ============================================================
-   ПЛЕЙЛИСТЫ — привязка к аккаунту
+   ПЛЕЙЛИСТЫ — облако через JSONBin
    ============================================================ */
-function getPlaylistsKey() {
-    const who = (typeof currentUser !== 'undefined' && currentUser)
-        ? ('u_' + (currentUser.id || currentUser.username))
-        : 'guest';
-    return `gaga_playlists_${who}`;
-}
+const PLAYLISTS_BIN_ID = '6abe9affffd5d16053437b1e';
+const PLAYLISTS_API_KEY = '$2a$10$Q.oT76K01L8Ec3NOZTDgM.E0tki.OTODFHOpSA97fHFExeMVZ5xD.';
+const PLAYLISTS_LS_KEY = 'gaga_playlists';   // используется как префикс локального кэша
 
 let playlists = [];
 
-function loadPlaylists() {
+/* Загружает плейлисты: если залогинен — тянет с JSONBin, если гость — из localStorage */
+async function loadPlaylists() {
+    if (!currentUser) {
+        try { playlists = JSON.parse(localStorage.getItem(PLAYLISTS_LS_KEY) || '[]'); }
+        catch { playlists = []; }
+        return { source: 'local' };
+    }
+
+    const userKey = String(currentUser.id || currentUser.username);
     try {
-        playlists = JSON.parse(localStorage.getItem(getPlaylistsKey()) || '[]');
-    } catch {
-        playlists = [];
+        const r = await fetch(`https://api.jsonbin.io/v3/b/${PLAYLISTS_BIN_ID}/latest`, {
+            headers: { 'X-Master-Key': PLAYLISTS_API_KEY }
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const d = await r.json();
+        const users = d.record?.users || {};
+        playlists = Array.isArray(users[userKey]) ? users[userKey] : [];
+        try { localStorage.setItem(PLAYLISTS_LS_KEY + '_' + userKey, JSON.stringify(playlists)); } catch {}
+        return { source: 'server' };
+    } catch (e) {
+        console.warn('loadPlaylists fallback:', e);
+        try { playlists = JSON.parse(localStorage.getItem(PLAYLISTS_LS_KEY + '_' + userKey) || '[]'); }
+        catch { playlists = []; }
+        return { source: 'local' };
     }
 }
-function savePlaylists() {
+
+/* Сохраняет плейлисты: если залогинен — кладёт в JSONBin (общий для всех устройств) */
+async function savePlaylists() {
+    if (!currentUser) {
+        try { localStorage.setItem(PLAYLISTS_LS_KEY, JSON.stringify(playlists)); } catch {}
+        return { source: 'local' };
+    }
+
+    const userKey = String(currentUser.id || currentUser.username);
+    try { localStorage.setItem(PLAYLISTS_LS_KEY + '_' + userKey, JSON.stringify(playlists)); } catch {}
+
     try {
-        localStorage.setItem(getPlaylistsKey(), JSON.stringify(playlists));
-    } catch {}
+        const gr = await fetch(`https://api.jsonbin.io/v3/b/${PLAYLISTS_BIN_ID}/latest`, {
+            headers: { 'X-Master-Key': PLAYLISTS_API_KEY }
+        });
+        if (!gr.ok) throw new Error('GET ' + gr.status);
+        const cur = await gr.json();
+        const rec = cur.record || {};
+        const users = rec.users && typeof rec.users === 'object' ? rec.users : {};
+        users[userKey] = playlists;
+        rec.users = users;
+
+        const pr = await fetch(`https://api.jsonbin.io/v3/b/${PLAYLISTS_BIN_ID}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'X-Master-Key': PLAYLISTS_API_KEY },
+            body: JSON.stringify(rec)
+        });
+        if (!pr.ok) throw new Error('PUT ' + pr.status);
+        return { source: 'server' };
+    } catch (e) {
+        console.warn('savePlaylists fallback:', e);
+        return { source: 'local' };
+    }
 }
-function openPlaylistsSidebar() {
+
+async function openPlaylistsSidebar() {
     const el = document.getElementById('playlistsSidebar');
     el.classList.add('open'); syncAriaOpen(el, true);
     document.getElementById('overlay').classList.add('active');
+    renderPlaylists();
+    await loadPlaylists();
     renderPlaylists();
 }
 function closePlaylistsSidebar() {
@@ -2550,39 +2595,44 @@ function closePlaylistsSidebar() {
 }
 window.openPlaylistsSidebar = openPlaylistsSidebar;
 
-function createPlaylist(name) {
+async function createPlaylist(name) {
     name = (name || '').trim();
     if (!name) { alert('Введите название'); return null; }
     if (playlists.some(p => p.name.toLowerCase() === name.toLowerCase())) { alert('Такой плейлист уже есть'); return null; }
     const pl = { id: Date.now(), name, songIds: [], createdAt: new Date().toISOString() };
-    playlists.push(pl); savePlaylists();
+    playlists.push(pl);
+    await savePlaylists();
     return pl;
 }
-function _doCreatePlaylistFromInput() {
+async function _doCreatePlaylistFromInput() {
     const i = document.getElementById('newPlaylistName');
     if (!i) return;
-    const pl = createPlaylist(i.value);
+    const pl = await createPlaylist(i.value);
     if (pl) { i.value = ''; renderPlaylists(); }
 }
 function tryCreatePlaylist() { requireAuth('playlist', _doCreatePlaylistFromInput); }
 window.tryCreatePlaylist = tryCreatePlaylist;
 
-function deletePlaylist(id) {
+async function deletePlaylist(id) {
     if (!confirm('Удалить плейлист?')) return;
     playlists = playlists.filter(p => p.id !== id);
-    savePlaylists(); renderPlaylists();
+    await savePlaylists();
+    renderPlaylists();
 }
-function _doAddSongToPlaylist(plId, songId) {
+async function _doAddSongToPlaylist(plId, songId) {
     const pl = playlists.find(p => p.id === plId);
     if (!pl) return;
     if (pl.songIds.includes(songId)) { alert('Уже в плейлисте'); return; }
-    pl.songIds.push(songId); savePlaylists(); renderPlaylists();
+    pl.songIds.push(songId);
+    await savePlaylists();
+    renderPlaylists();
 }
-function removeSongFromPlaylist(plId, songId) {
+async function removeSongFromPlaylist(plId, songId) {
     const pl = playlists.find(p => p.id === plId);
     if (!pl) return;
     pl.songIds = pl.songIds.filter(id => id !== songId);
-    savePlaylists(); renderPlaylists();
+    await savePlaylists();
+    renderPlaylists();
 }
 function renderPlaylists() {
     const list = document.getElementById('playlistsList');
@@ -2623,13 +2673,13 @@ function playFromPlaylist(plId, songId) {
     const s = songsDatabase.find(x => x.id === songId);
     if (s) { closePlaylistsSidebar(); showMusic(); playSong(s); }
 }
-function _openAddToPlaylistModalActual(songId) {
+async function _openAddToPlaylistModalActual(songId) {
     if (playlists.length === 0) {
         if (!confirm('Нет плейлистов. Создать новый?')) return;
         const name = prompt('Название плейлиста:');
         if (!name) return;
-        const pl = createPlaylist(name);
-        if (pl) _doAddSongToPlaylist(pl.id, songId);
+        const pl = await createPlaylist(name);
+        if (pl) await _doAddSongToPlaylist(pl.id, songId);
         return;
     }
     const overlay = document.createElement('div');
@@ -2642,8 +2692,8 @@ function _openAddToPlaylistModalActual(songId) {
     overlay.appendChild(box);
     document.body.appendChild(overlay);
     box.querySelectorAll('.addpl-item').forEach(btn => {
-        btn.addEventListener('click', () => {
-            _doAddSongToPlaylist(parseInt(btn.dataset.id, 10), songId);
+        btn.addEventListener('click', async () => {
+            await _doAddSongToPlaylist(parseInt(btn.dataset.id, 10), songId);
             document.body.removeChild(overlay);
         });
     });
@@ -2802,7 +2852,7 @@ function initGlobalHandlers() {
 }
 
 /* ============================================================
-   ЭКРАН ТЕСТА — с привязкой к аккаунту
+   ЭКРАН ТЕСТА — привязка к аккаунту
    ============================================================ */
 const TEST_BIN_ID = '6abd3704ffd5d160533fa68a';
 const TEST_API_KEY = '$2a$10$Q.oT76K01L8Ec3NOZTDgM.E0tki.OTODFHOpSA97fHFExeMVZ5xD.';
@@ -2811,7 +2861,6 @@ let testTasks = [];
 let testAnswers = {};
 let testCurrentIndex = 0;
 
-/* Ключи localStorage зависят от текущего пользователя */
 function getTestKey(base) {
     const who = (typeof currentUser !== 'undefined' && currentUser)
         ? ('u_' + (currentUser.id || currentUser.username))
