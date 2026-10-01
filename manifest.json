@@ -1,0 +1,25 @@
+{
+    "name": "GAGAarchive — фан-архив Lady Gaga",
+    "short_name": "GAGAarchive",
+    "description": "Песни, тексты, видео и фото Lady Gaga",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#ff2a7a",
+    "orientation": "portrait-primary",
+    "lang": "ru",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23000'/%3E%3Ctext x='256' y='360' font-size='320' font-family='Helvetica Neue, Arial, sans-serif' font-weight='700' fill='%23ff2a7a' text-anchor='middle'%3ELG%3C/text%3E%3C/svg%3E",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23000'/%3E%3Ctext x='256' y='360' font-size='320' font-family='Helvetica Neue, Arial, sans-serif' font-weight='700' fill='%23fff' text-anchor='middle'%3ELG%3C/text%3E%3C/svg%3E",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "maskable"
+        }
+    ]
+}
